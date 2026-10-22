@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Kids Slap Strap 3D Studio & Customizer</title>
+    <!-- Tailwind CSS for modern responsive layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for sleek UI icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- OrbitControls for Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .font-led {
+            font-family: 'VT323', monospace;
+        }
+        /* Glassmorphism custom card styling */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        /* Signal animation */
+        @keyframes signal-ping {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+        .animate-signal {
+            animation: signal-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-teal-500 selection:text-white">
+
+    <!-- TOP HEADER / NAVBAR -->
+    <header class="w-full glass-panel sticky top-0 z-40 border-b border-slate-800/80 px-4 lg:px-8 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-teal-500/30">
+                <i class="fa-solid font-bold text-slate-950 text-xl fa-band-aid"></i>
+            </div>
+            <div>
+                <h1 class="text-lg lg:text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                    KID-SAFE <span class="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">SLAP-STRAP 3D</span>
+                </h1>
+                <p class="text-xs text-slate-400">BLE Proximity & Parametric Smart Wristband Studio</p>
+            </div>
+        </div>
+
+        <!-- Right Quick Action Bar -->
+        <div class="flex items-center space-x-3">
+            <!-- Audio Mute Toggle Button -->
+            <button onclick="toggleAudioMute()" id="btn-audio-toggle" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs transition-all flex items-center gap-2 border border-slate-700">
+                <i id="audio-icon" class="fa-solid fa-volume-high text-teal-400"></i>
+                <span id="audio-status-text" class="hidden sm:inline">Audio Enabled</span>
+            </button>
+            <button onclick="triggerSOSAlert()" class="px-3.5 py-1.5 rounded-lg bg-red-600/90 hover:bg-red-500 text-white font-semibold text-xs transition-all duration-200 flex items-center gap-2 shadow-lg shadow-red-600/30 border border-red-400/40 active:scale-95">
+                <i class="fa-solid fa-triangle-exclamation animate-pulse"></i>
+                <span class="hidden sm:inline">TEST SOS ALERT</span>
+            </button>
+            <button onclick="openExportModal()" class="px-4 py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs transition-all duration-200 flex items-center gap-2 shadow-lg shadow-teal-500/25 active:scale-95">
+                <i class="fa-solid fa-file-export"></i>
+                <span>EXPORT SPECS</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTENT AREA (2-COLUMN RESPONSIVE LAYOUT) -->
+    <main class="flex-1 w-full max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden relative">
+        
+        <!-- LEFT 3D VIEWPORT CONTAINER -->
+        <section class="lg:col-span-7 xl:col-span-8 relative h-[50vh] lg:h-[calc(100vh-65px)] bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 flex flex-col justify-between overflow-hidden">
+            
+            <!-- 3D Canvas Target Element -->
+            <div id="three-container" class="w-full h-full cursor-grab active:cursor-grabbing relative"></div>
+
+            <!-- BLE Beacon Signal Indicator Effect -->
+            <div id="ble-beacon-signal" class="absolute top-16 left-1/2 -translate-x-1/2 pointer-events-none hidden flex-col items-center gap-1 z-20">
+                <div class="relative flex items-center justify-center">
+                    <span class="absolute w-12 h-12 rounded-full bg-teal-400/30 animate-signal"></span>
+                    <div class="w-8 h-8 rounded-full bg-teal-500 text-slate-950 flex items-center justify-center shadow-lg shadow-teal-500/50 text-sm font-bold">
+                        <i class="fa-solid fa-tower-broadcast"></i>
+                    </div>
+                </div>
+                <span id="ble-beacon-label" class="text-[11px] font-bold text-teal-300 bg-slate-900/90 px-2.5 py-0.5 rounded-full border border-teal-500/40 shadow-lg">BLE Beacon Detected</span>
+            </div>
+
+            <!-- Overlay Control Badges & Floating Helpers -->
+            <div class="absolute top-4 left-4 z-10 flex flex-col gap-2">
+                <!-- Preset View Buttons -->
+                <div class="glass-panel p-1.5 rounded-xl flex items-center gap-1">
+                    <button onclick="setCameraView('perspective')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">3D Orbit</button>
+                    <button onclick="setCameraView('top')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Top View</button>
+                    <button onclick="setCameraView('front')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Front View</button>
+                    <button onclick="resetCamera()" class="px-2 py-1 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition" title="Reset Camera"><i class="fa-solid fa-arrows-to-dot"></i></button>
+                </div>
+                
+                <!-- Status Badge -->
+                <div id="status-badge" class="glass-panel px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs font-medium text-emerald-400 border border-emerald-500/30">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="status-badge-text">STATUS: NORMAL / IDLE</span>
+                </div>
+            </div>
+
+            <!-- Viewport Overlay Instruction -->
+            <div class="absolute bottom-4 left-4 pointer-events-none z-10 hidden sm:flex items-center gap-2 text-xs text-slate-400 glass-panel px-3 py-1.5 rounded-lg border border-slate-800">
+                <i class="fa-solid fa-mouse text-slate-400"></i>
+                <span>Drag to Rotate | Scroll to Zoom | Right Click to Pan</span>
+            </div>
+
+            <!-- Quick Live LED Display Preview Bar -->
+            <div class="absolute bottom-4 right-4 z-10 glass-panel px-4 py-2 rounded-xl flex items-center gap-3 border border-slate-800">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">LED Matrix Output:</span>
+                <div class="bg-black/90 px-3 py-1 rounded border border-slate-800 flex items-center justify-center min-w-[110px] overflow-hidden">
+                    <span id="screen-overlay-preview" class="font-led text-xl tracking-widest text-emerald-400 whitespace-nowrap">SAFE</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT SIDEBAR CUSTOMIZATION PANEL -->
+        <aside class="lg:col-span-5 xl:col-span-4 h-[calc(100vh-65px)] overflow-y-auto glass-panel border-l border-slate-800/80 p-5 flex flex-col justify-between gap-6">
+            
+            <div class="space-y-6">
+
+                <!-- NEW SECTION: BLE BEACON PROXIMITY DETECTION & CHIMES -->
+                <div class="space-y-3 bg-slate-900/80 p-4 rounded-2xl border border-teal-500/30 shadow-lg">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h2 class="text-xs font-bold text-teal-300 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-wifi text-teal-400 animate-pulse"></i> BLE Beacon Proximity Simulation
+                        </h2>
+                        <span class="text-[10px] bg-teal-500/20 text-teal-300 px-2 py-0.5 rounded-full font-semibold border border-teal-500/30">Auto Chime</span>
+                    </div>
+
+                    <p class="text-xs text-slate-400">Simulate entering a BLE location beacon zone to trigger custom arrival chimes and LED messages:</p>
+
+                    <!-- Interactive BLE Beacon Zone Triggers -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="triggerBLEBeacon('playground')" class="p-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 text-xs font-semibold flex items-center gap-2 transition group active:scale-95">
+                            <i class="fa-solid fa-child-reaching text-emerald-400 text-base group-hover:scale-110 transition"></i>
+                            <div class="text-left">
+                                <div class="font-bold">Playground</div>
+                                <div class="text-[9px] text-emerald-400/80">Chime + "PLAYGROUND"</div>
+                            </div>
+                        </button>
+
+                        <button onclick="triggerBLEBeacon('bus')" class="p-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-xs font-semibold flex items-center gap-2 transition group active:scale-95">
+                            <i class="fa-solid fa-bus text-amber-400 text-base group-hover:scale-110 transition"></i>
+                            <div class="text-left">
+                                <div class="font-bold">School Bus</div>
+                                <div class="text-[9px] text-amber-400/80">Melody + "BUS HERE"</div>
+                            </div>
+                        </button>
+
+                        <button onclick="triggerBLEBeacon('home')" class="p-2.5 rounded-xl border border-sky-500/30 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 text-xs font-semibold flex items-center gap-2 transition group active:scale-95">
+                            <i class="fa-solid fa-house-user text-sky-400 text-base group-hover:scale-110 transition"></i>
+                            <div class="text-left">
+                                <div class="font-bold">Home Safe</div>
+                                <div class="text-[9px] text-sky-400/80">Bell + "WELCOME HOME"</div>
+                            </div>
+                        </button>
+
+                        <button onclick="triggerBLEBeacon('danger')" class="p-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs font-semibold flex items-center gap-2 transition group active:scale-95">
+                            <i class="fa-solid fa-shield-cat text-rose-400 text-base group-hover:scale-110 transition"></i>
+                            <div class="text-left">
+                                <div class="font-bold">Boundary Out</div>
+                                <div class="text-[9px] text-rose-400/80">Warning + "WARNING"</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECTION 1: STRAP & MODULE COLORS -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-palette text-teal-400"></i> 1. Wristband & Module Colors
+                        </h2>
+                        <span class="text-xs text-slate-400">TPU & Rigid Enclosure</span>
+                    </div>
+
+                    <!-- Flexible Strap Color Options -->
+                    <div>
+                        <label class="text-xs font-medium text-slate-300 block mb-2">Slap Strap Color (Flexible TPU)</label>
+                        <div class="grid grid-cols-4 sm:grid-cols-8 gap-2" id="strap-color-options">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Strap Pattern -->
+                    <div>
+                        <label class="text-xs font-medium text-slate-300 block mb-2">Strap Pattern</label>
+                        <div class="grid grid-cols-4 gap-2" id="pattern-options"></div>
+                        <div id="pattern-color-row" class="flex items-center gap-2 mt-3">
+                            <span class="text-[11px] text-slate-400">Pattern color</span>
+                            <div class="flex items-center gap-2" id="pattern-color-options"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slap Curl -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="curl-slider" class="text-xs font-medium text-slate-300">Slap Curl</label>
+                            <span class="text-[10px] text-slate-400">Flat to Wrapped</span>
+                        </div>
+                        <input id="curl-slider" type="range" min="0" max="100" value="65" oninput="setCurl(this.value)" class="w-full accent-teal-400">
+                    </div>
+
+                    <!-- Module Housing Color Options -->
+                    <div>
+                        <label class="text-xs font-medium text-slate-300 block mb-2">Central Module Housing Color (Rigid Enclosure)</label>
+                        <div class="grid grid-cols-5 gap-2" id="module-color-options">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: LED DISPLAY & TEXT MESSAGE -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-tv text-emerald-400"></i> 2. LED Matrix Screen Message
+                        </h2>
+                        <span class="text-xs text-slate-400">Rectangular Screen</span>
+                    </div>
+
+                    <!-- Custom Text Input Box -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="text-xs font-medium text-slate-300">Custom LED Display Text</label>
+                            <span class="text-[10px] text-slate-400">Auto-Scrolls if Long</span>
+                        </div>
+                        <div class="relative">
+                            <input type="text" id="led-text-input" value="SAFE" maxlength="24" 
+                                class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-teal-300 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition tracking-wider uppercase font-led text-lg"
+                                placeholder="TYPE MESSAGE...">
+                            <button onclick="clearLEDText()" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs px-1.5 py-1">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Quick Preset Message Pills -->
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            <button onclick="setPresetText('COME HOME')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 transition">COME HOME</button>
+                            <button onclick="setPresetText('I LOVE YOU')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 transition">I LOVE YOU</button>
+                            <button onclick="setPresetText('BUS IS HERE')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 transition">BUS IS HERE</button>
+                            <button onclick="setPresetText('DINNER TIME')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 transition">DINNER TIME</button>
+                        </div>
+                    </div>
+
+                    <!-- LED Glow Color Selection -->
+                    <div>
+                        <label class="text-xs font-medium text-slate-300 block mb-2">LED Matrix Glow Color</label>
+                        <div class="flex items-center gap-2" id="led-color-options">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: MODULAR CHARMS MANAGER (JIBBITZ HOLES) -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-shapes text-amber-400"></i> 3. Crocs Jibbitz-Style Modular Charms
+                        </h2>
+                        <span class="text-xs text-slate-400">Snap-In Holes</span>
+                    </div>
+
+                    <!-- Charm Slots Selector Grid -->
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800/80 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-slate-300">Strap Holes Configuration</span>
+                                <span class="text-[11px] text-slate-400">4 Circular Holes</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2" id="charm-slots-container">
+                                <!-- Hole 1, 2, 3, 4 Slot controls generated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: STATE & INTERACTIVE SIMULATION -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-indigo-400"></i> 4. State & Alert Simulation
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="setStateMode('idle')" id="btn-state-idle" class="p-2.5 rounded-xl border border-teal-500/40 bg-teal-500/10 text-teal-300 text-xs font-semibold flex items-center gap-2 hover:bg-teal-500/20 transition">
+                            <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                            <span>Normal / Idle</span>
+                        </button>
+                        <button onclick="setStateMode('arrived')" id="btn-state-arrived" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 text-xs font-semibold flex items-center gap-2 hover:bg-slate-800 transition">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span>Arrived Safe</span>
+                        </button>
+                        <button onclick="setStateMode('fall')" id="btn-state-fall" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 text-xs font-semibold flex items-center gap-2 hover:bg-slate-800 transition">
+                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                            <span>Fall Check</span>
+                        </button>
+                        <button onclick="setStateMode('sos')" id="btn-state-sos" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 text-xs font-semibold flex items-center gap-2 hover:bg-slate-800 transition">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                            <span>SOS Trigger</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- LIVE CONFIG SUMMARY CARD -->
+            <div class="glass-panel p-4 rounded-xl border border-slate-800/90 space-y-2 mt-4">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                    <span>Live Hardware Spec Summary</span>
+                    <i class="fa-solid fa-microchip text-teal-400"></i>
+                </h3>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                    <div class="text-slate-400">Strap Material: <span id="summary-strap-color" class="text-slate-200 font-medium">Teal (TPU)</span></div>
+                    <div class="text-slate-400">Module Enclosure: <span id="summary-module-color" class="text-slate-200 font-medium">Dark Slate</span></div>
+                    <div class="text-slate-400">Active Charms: <span id="summary-charms-count" class="text-slate-200 font-medium">2 Attached</span></div>
+                    <div class="text-slate-400">Active LED Msg: <span id="summary-led-msg" class="text-slate-200 font-medium font-led text-sm">SAFE</span></div>
+                </div>
+            </div>
+
+        </aside>
+    </main>
+
+    <!-- EXPORT & PRINT SPECIFICATION MODAL -->
+    <div id="export-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-xl w-full rounded-2xl border border-slate-700/80 p-6 space-y-6 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <!-- Modal Close Button -->
+            <button onclick="closeExportModal()" class="absolute right-4 top-4 text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center text-xl font-bold border border-teal-500/30">
+                    <i class="fa-solid fa-cube"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Export & 3D Print Configurations</h3>
+                    <p class="text-xs text-slate-400">Recommended slicing profile & OpenSCAD parametric parameters</p>
+                </div>
+            </div>
+
+            <!-- Print Specs Matrix -->
+            <div class="space-y-3 text-xs text-slate-300">
+                <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                    <div class="font-semibold text-teal-300 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group"></i> Slap Strap Component (Flexible)
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 text-slate-400 pl-1">
+                        <li><strong class="text-slate-200">Filament:</strong> TPU (Thermoplastic Polyurethane - 95A hardness)</li>
+                        <li><strong class="text-slate-200">Infill:</strong> 100% Solid for maximum tensile flexibility & snapping</li>
+                        <li><strong class="text-slate-200">Orientation:</strong> Print flat on build bed (No supports needed)</li>
+                        <li><strong class="text-slate-200">Charm Holes:</strong> 4x Circular Crocs-style sockets (7mm diameter)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                    <div class="font-semibold text-indigo-300 flex items-center gap-2">
+                        <i class="fa-solid fa-box-archive"></i> Central Electronics Module Enclosure
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 text-slate-400 pl-1">
+                        <li><strong class="text-slate-200">Filament:</strong> PLA, PETG or Tough ABS</li>
+                        <li><strong class="text-slate-200">Screen Cutout:</strong> Rectangular Matrix Viewport (24mm x 14mm)</li>
+                        <li><strong class="text-slate-200">Safety:</strong> Fully rounded housing edges and pill-shaped strap ends, no sharp corners</li>
+                        <li><strong class="text-slate-200">BLE Chipset:</strong> ESP32-C3 / nRF52840 Low Energy Beacon</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end space-x-3 pt-2 border-t border-slate-800">
+                <button onclick="downloadConfigFile()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs transition">
+                    <i class="fa-solid fa-download mr-1.5"></i> Download JSON Config
+                </button>
+                <button onclick="downloadSTLMock()" class="px-5 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-teal-500/25">
+                    <i class="fa-solid fa-file-arrow-down mr-1.5"></i> Download STL Bundle (.zip)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN THREE.JS APP & INTERACTION SCRIPT -->
+    <script>
+        // =================================================================
+        // GLOBAL STATE CONFIGURATION
+        // =================================================================
+        const config = {
+            strapColor: '#1D9E75', // Teal default
+            strapColorName: 'Teal',
+            moduleColor: '#334155', // Dark Slate default
+            moduleColorName: 'Dark Slate',
+            ledText: 'SAFE',
+            ledColor: '#34d399', // Emerald default
+            ledColorName: 'Emerald Green',
+            stateMode: 'idle', // idle, arrived, fall, sos
+            audioEnabled: true,
+            strapPattern: 'solid',
+            patternColor: '#ffffff',
+            charms: [
+                { type: 'star', color: '#EF9F27', active: true },
+                { type: 'heart', color: '#f43f5e', active: true },
+                { type: 'gem', color: '#8b5cf6', active: false },
+                { type: 'bubble', color: '#38bdf8', active: false }
+            ]
+        };
+
+        // COLOR PALETTES
+        const STRAP_COLORS = [
+            { name: 'Teal', hex: '#1D9E75' },
+            { name: 'Coral', hex: '#f97316' },
+            { name: 'Lavender', hex: '#a855f7' },
+            { name: 'Ocean Blue', hex: '#0284c7' },
+            { name: 'Neon Green', hex: '#22c55e' },
+            { name: 'Sunburst', hex: '#eab308' },
+            { name: 'Rose Pink', hex: '#ec4899' },
+            { name: 'Charcoal', hex: '#334155' }
+        ];
+
+        const MODULE_COLORS = [
+            { name: 'Dark Slate', hex: '#334155' },
+            { name: 'Pearl White', hex: '#f8fafc' },
+            { name: 'Soft Gray', hex: '#94a3b8' },
+            { name: 'Matte Black', hex: '#0f172a' },
+            { name: 'Pastel Blue', hex: '#7dd3fc' }
+        ];
+
+        const LED_COLORS = [
+            { name: 'Emerald Green', hex: '#34d399' },
+            { name: 'Bright Amber', hex: '#fbbf24' },
+            { name: 'Crimson Red', hex: '#f87171' },
+            { name: 'Neon White', hex: '#f8fafc' },
+            { name: 'Purple Pink', hex: '#e879f9' }
+        ];
+
+        // Hole X-positions along flat slap strap
+        const HOLE_X_POSITIONS = [-6.5, -4.2, 4.2, 6.5];
+
+        // Slap-strap geometry settings
+        const STRAP_L = 18, STRAP_W = 2.2, STRAP_T = 0.3, FLAT_HALF = 2.1, KMAX = 0.46, ARCH = 0.06, NX = 150, NZ = 10;
+        let bend = 0.65, targetBend = 0.65;
+        let strapCanvas, strapCtx, strapTex;
+
+        const PATTERNS = [
+            { id: 'solid', name: 'Solid' },
+            { id: 'dots', name: 'Polka Dot' },
+            { id: 'zigzag', name: 'Zigzag' },
+            { id: 'stripes', name: 'Stripes' }
+        ];
+        const PATTERN_COLORS = ['#ffffff', '#fde047', '#fb7185', '#0f172a'];
+
+        // THREE.JS SCENE VARIABLES
+        let scene, camera, renderer, controls;
+        let strapMesh, moduleMesh, sosButtonMesh, ledScreenMesh;
+        let charmMeshes = [];
+        let ledCanvas, ledCtx, ledTexture;
+        let clock = new THREE.Clock();
+        let scrollOffset = 0;
+
+        // WEB AUDIO SYNTHESIZER CONTEXT
+        let audioCtx = null;
+
+        // =================================================================
+        // WEB AUDIO CHIME & MELODY ENGINE
+        // =================================================================
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playNote(freq, type, startTime, duration, vol = 0.15) {
+            if (!config.audioEnabled) return;
+            initAudio();
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + startTime);
+
+            // Envelope
+            gain.gain.setValueAtTime(0, audioCtx.currentTime + startTime);
+            gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + startTime + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + startTime + duration);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(audioCtx.currentTime + startTime);
+            osc.stop(audioCtx.currentTime + startTime + duration);
+        }
+
+        // PRESET CHIMES & SOUND EFFECTS
+        function playChimeSound(preset) {
+            if (!config.audioEnabled) return;
+
+            if (preset === 'playground') {
+                // Joyful 4-Note Arpeggio (C5, E5, G5, C6)
+                playNote(523.25, 'triangle', 0.0, 0.25, 0.2);
+                playNote(659.25, 'triangle', 0.12, 0.25, 0.2);
+                playNote(783.99, 'triangle', 0.24, 0.25, 0.2);
+                playNote(1046.50, 'sine', 0.36, 0.6, 0.25);
+            } else if (preset === 'bus') {
+                // Friendly Double Honk / Bus chime
+                playNote(440, 'sine', 0.0, 0.15, 0.2);
+                playNote(554.37, 'sine', 0.0, 0.15, 0.2);
+                playNote(440, 'sine', 0.2, 0.25, 0.2);
+                playNote(554.37, 'sine', 0.2, 0.25, 0.2);
+            } else if (preset === 'home') {
+                // Warm Home Bell (Ding-Dong: E5 -> C5)
+                playNote(659.25, 'sine', 0.0, 0.4, 0.25);
+                playNote(523.25, 'sine', 0.25, 0.7, 0.3);
+            } else if (preset === 'danger') {
+                // Warning dual-tone ping
+                playNote(880, 'sawtooth', 0.0, 0.15, 0.15);
+                playNote(440, 'sawtooth', 0.15, 0.25, 0.2);
+            } else if (preset === 'sos') {
+                // High Urgency Alarm Sirens
+                playNote(987.77, 'square', 0.0, 0.15, 0.15);
+                playNote(1318.51, 'square', 0.15, 0.15, 0.15);
+                playNote(987.77, 'square', 0.30, 0.15, 0.15);
+                playNote(1318.51, 'square', 0.45, 0.2, 0.15);
+            }
+        }
+
+        function toggleAudioMute() {
+            config.audioEnabled = !config.audioEnabled;
+            const btnText = document.getElementById('audio-status-text');
+            const icon = document.getElementById('audio-icon');
+
+            if (config.audioEnabled) {
+                btnText.innerText = 'Audio Enabled';
+                icon.className = 'fa-solid fa-volume-high text-teal-400';
+                playChimeSound('home');
+            } else {
+                btnText.innerText = 'Muted';
+                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+            }
+        }
+
+        // =================================================================
+        // INITIALIZATION
+        // =================================================================
+        window.addEventListener('load', () => {
+            initUIControls();
+            initThreeJS();
+            updateLEDTexture();
+            animate();
+            updateSummaryCard();
+        });
+
+        // =================================================================
+        // THREE.JS SCENE SETUP & MODEL CREATION
+        // =================================================================
+        function initThreeJS() {
+            const container = document.getElementById('three-container');
+
+            // 1. Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0f172a); // Slate-900 background
+
+            // 2. Camera
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 18, 22);
+
+            // 3. Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            // 4. Orbit Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2 + 0.1;
+            controls.minDistance = 8;
+            controls.maxDistance = 40;
+
+            // 5. Lighting Setup
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            const mainLight = new THREE.DirectionalLight(0xffffff, 0.9);
+            mainLight.position.set(10, 20, 15);
+            mainLight.castShadow = true;
+            mainLight.shadow.mapSize.width = 2048;
+            mainLight.shadow.mapSize.height = 2048;
+            scene.add(mainLight);
+
+            const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.4);
+            fillLight.position.set(-10, 10, -10);
+            scene.add(fillLight);
+
+            // Studio Ground Shadow Plane
+            const planeGeo = new THREE.PlaneGeometry(100, 100);
+            const planeMat = new THREE.ShadowMaterial({ opacity: 0.3 });
+            const shadowPlane = new THREE.Mesh(planeGeo, planeMat);
+            shadowPlane.rotation.x = -Math.PI / 2;
+            shadowPlane.position.y = -0.5;
+            shadowPlane.receiveShadow = true;
+            scene.add(shadowPlane);
+
+            // Subtle studio grid
+            const gridHelper = new THREE.GridHelper(50, 50, 0x334155, 0x1e293b);
+            gridHelper.position.y = -0.49;
+            scene.add(gridHelper);
+
+            // 6. Build Wristband Assembly
+            buildWristbandModel();
+
+            // Raycaster for click interaction on SOS button
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+
+            renderer.domElement.addEventListener('click', (event) => {
+                const rect = renderer.domElement.getBoundingClientRect();
+                mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
+                mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects([sosButtonMesh]);
+
+                if (intersects.length > 0) {
+                    triggerSOSAlert();
+                }
+            });
+
+            // Window resize handler
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        // =================================================================
+        // BUILD 3D WRISTBAND MODEL (PARAMETRIC GEOMETRY)
+        // =================================================================
+        function buildWristbandModel() {
+            const wristbandGroup = new THREE.Group();
+
+            // --- A. SLAP BRACELET STRAP (TPU): curled band, pill-shaped ends, patterned ---
+            strapCanvas = document.createElement('canvas');
+            strapCanvas.width = 1024;
+            strapCanvas.height = 128;
+            strapCtx = strapCanvas.getContext('2d');
+            strapTex = new THREE.CanvasTexture(strapCanvas);
+            strapTex.anisotropy = 8;
+
+            // Alpha map cuts the 4 charm holes
+            const holeCanvas = document.createElement('canvas');
+            holeCanvas.width = 1024;
+            holeCanvas.height = 128;
+            const hg = holeCanvas.getContext('2d');
+            hg.fillStyle = '#fff';
+            hg.fillRect(0, 0, 1024, 128);
+            hg.fillStyle = '#000';
+            HOLE_X_POSITIONS.forEach(x => {
+                hg.beginPath();
+                hg.arc((x + STRAP_L / 2) / STRAP_L * 1024, 64, 0.4 * 1024 / STRAP_L, 0, Math.PI * 2);
+                hg.fill();
+            });
+
+            const strapMat = new THREE.MeshStandardMaterial({
+                map: strapTex,
+                alphaMap: new THREE.CanvasTexture(holeCanvas),
+                alphaTest: 0.5,
+                side: THREE.DoubleSide,
+                roughness: 0.55,
+                metalness: 0.05
+            });
+
+            strapMesh = new THREE.Mesh(createStrapGeometry(), strapMat);
+            strapMesh.position.y = 0.15;
+            strapMesh.castShadow = true;
+            strapMesh.receiveShadow = true;
+            strapMesh.frustumCulled = false;
+            updateStrapGeometry();
+            drawStrapTexture();
+            wristbandGroup.add(strapMesh);
+
+            // --- B. CENTRAL MODULE HOUSING (ROUNDED, SOFT-EDGED ENCLOSURE FOR THE ESP) ---
+            const moduleGeo = new THREE.ExtrudeGeometry(roundedRectShape(3.0, 3.0, 0.8), {
+                depth: 0.5, bevelEnabled: true, bevelSegments: 8, bevelSize: 0.3, bevelThickness: 0.3, curveSegments: 14
+            });
+            moduleGeo.rotateX(-Math.PI / 2);
+            moduleGeo.center();
+            const moduleMat = new THREE.MeshStandardMaterial({
+                color: new THREE.Color(config.moduleColor),
+                roughness: 0.4,
+                metalness: 0.1
+            });
+
+            moduleMesh = new THREE.Mesh(moduleGeo, moduleMat);
+            moduleMesh.position.set(0, 0.7, 0);
+            moduleMesh.castShadow = true;
+            wristbandGroup.add(moduleMesh);
+
+            // Rounded bezel frame around the LED screen
+            const bezelGeo = new THREE.ExtrudeGeometry(roundedRectShape(2.7, 1.7, 0.35), { depth: 0.05, bevelEnabled: false, curveSegments: 10 });
+            bezelGeo.rotateX(-Math.PI / 2);
+            const bezelMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.2 });
+            const bezelMesh = new THREE.Mesh(bezelGeo, bezelMat);
+            bezelMesh.position.set(0, 1.24, 0);
+            wristbandGroup.add(bezelMesh);
+
+            // --- C. RECTANGULAR LED MATRIX SCREEN ---
+            createLEDDynamicCanvas();
+            const ledGeo = new THREE.PlaneGeometry(2.5, 1.5);
+            const ledMat = new THREE.MeshBasicMaterial({
+                map: ledTexture,
+                transparent: true
+            });
+            ledScreenMesh = new THREE.Mesh(ledGeo, ledMat);
+            ledScreenMesh.rotation.x = -Math.PI / 2;
+            ledScreenMesh.position.set(0, 1.31, 0);
+            wristbandGroup.add(ledScreenMesh);
+
+            // --- D. SIDE SOS BUTTON (soft rounded dome) ---
+            const sosGeo = new THREE.SphereGeometry(0.34, 24, 16);
+            const sosMat = new THREE.MeshStandardMaterial({
+                color: 0xef4444,
+                roughness: 0.2,
+                emissive: 0x7f1d1d,
+                emissiveIntensity: 0.3
+            });
+            sosButtonMesh = new THREE.Mesh(sosGeo, sosMat);
+            sosButtonMesh.scale.set(0.7, 1, 1);
+            sosButtonMesh.position.set(1.8, 0.7, 0);
+            wristbandGroup.add(sosButtonMesh);
+
+            // --- E. CHARMS ASSEMBLY ---
+            buildCharms(wristbandGroup);
+
+            scene.add(wristbandGroup);
+        }
+
+        // =================================================================
+        // DYNAMIC CHARMS BUILDER
+        // =================================================================
+        function buildCharms(parentGroup) {
+            charmMeshes.forEach(mesh => {
+                if (mesh.parent) mesh.parent.remove(mesh);
+            });
+            charmMeshes = [];
+
+            // Soft snap-ring around every hole (shares the module material)
+            HOLE_X_POSITIONS.forEach(xPos => {
+                const rim = new THREE.Group();
+                rim.userData = { s: xPos, rim: true };
+                const ringGeo = new THREE.TorusGeometry(0.43, 0.09, 10, 28);
+                ringGeo.rotateX(Math.PI / 2);
+                rim.add(new THREE.Mesh(ringGeo, moduleMesh.material));
+                parentGroup.add(rim);
+                charmMeshes.push(rim);
+            });
+
+            config.charms.forEach((charm, index) => {
+                if (!charm.active) return;
+
+                const charmGroup = new THREE.Group();
+                charmGroup.userData = { s: HOLE_X_POSITIONS[index] };
+                const charmMat = new THREE.MeshStandardMaterial({
+                    color: new THREE.Color(charm.color),
+                    roughness: 0.2,
+                    metalness: 0.1
+                });
+
+                let charmGeo;
+                if (charm.type === 'star') {
+                    charmGeo = createStarGeometry();
+                } else if (charm.type === 'heart') {
+                    charmGeo = createHeartGeometry();
+                } else if (charm.type === 'gem') {
+                    charmGeo = new THREE.OctahedronGeometry(0.45, 0);
+                } else {
+                    charmGeo = new THREE.SphereGeometry(0.4, 32, 32);
+                }
+
+                // Charms are 35% bigger than before
+                const flat = charm.type === 'star' || charm.type === 'heart';
+                const charmMesh = new THREE.Mesh(charmGeo, charmMat);
+                charmMesh.castShadow = true;
+                charmMesh.scale.setScalar(1.35);
+                charmMesh.position.y = flat ? 0.6 : 0.98;
+                charmGroup.add(charmMesh);
+
+                const stemGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.8, 16);
+                const stemMat = new THREE.MeshStandardMaterial({ color: 0x334155 });
+                const stemMesh = new THREE.Mesh(stemGeo, stemMat);
+                stemMesh.position.y = 0.35;
+                charmGroup.add(stemMesh);
+
+                parentGroup.add(charmGroup);
+                charmMeshes.push(charmGroup);
+            });
+
+            layoutCharms();
+        }
+
+        // Place charms and snap-rings on the (possibly curled) strap
+        function layoutCharms() {
+            charmMeshes.forEach(g => {
+                const f = strapFrame(g.userData.s);
+                const o = g.userData.rim ? 0.2 : -0.15;
+                g.position.set(f.x + f.nx * o, 0.15 + f.y + f.ny * o, 0);
+                g.rotation.z = f.rot;
+            });
+        }
+
+        // =================================================================
+        // SLAP BRACELET STRAP: curved band with pill-shaped ends
+        // =================================================================
+        function roundedRectShape(w, h, r) {
+            const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+            s.moveTo(x + r, y);
+            s.lineTo(x + w - r, y);
+            s.quadraticCurveTo(x + w, y, x + w, y + r);
+            s.lineTo(x + w, y + h - r);
+            s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            s.lineTo(x + r, y + h);
+            s.quadraticCurveTo(x, y + h, x, y + h - r);
+            s.lineTo(x, y + r);
+            s.quadraticCurveTo(x, y, x + r, y);
+            return s;
+        }
+
+        // The middle (under the module) stays flat; both arms curl downward around the wrist.
+        function strapFrame(s) {
+            const a = Math.abs(s), sg = s < 0 ? -1 : 1;
+            const d = Math.max(0, a - FLAT_HALF), k = bend * KMAX, p = k * d;
+            let x = a, y = 0;
+            if (k > 1e-5 && d > 0) {
+                x = FLAT_HALF + Math.sin(p) / k;
+                y = -(1 - Math.cos(p)) / k;
+            }
+            return { x: sg * x, y: y, nx: sg * Math.sin(p), ny: Math.cos(p), rot: -sg * p };
+        }
+
+        function strapHalfW(s) {
+            const r = STRAP_W / 2, e = STRAP_L / 2 - r, a = Math.abs(s);
+            return a <= e ? r : r * Math.sqrt(Math.max(0, 1 - Math.pow((a - e) / r, 2)));
+        }
+
+        function createStrapGeometry() {
+            const geo = new THREE.BufferGeometry(), N = (NX + 1) * (NZ + 1);
+            const uv = new Float32Array(N * 4), idx = [];
+            let u = 0;
+            for (let layer = 0; layer < 2; layer++) {
+                for (let i = 0; i <= NX; i++) {
+                    const hw = strapHalfW(-STRAP_L / 2 + STRAP_L * i / NX);
+                    for (let j = 0; j <= NZ; j++) {
+                        uv[u++] = i / NX;
+                        uv[u++] = 0.5 + hw * (-1 + 2 * j / NZ) / STRAP_W;
+                    }
+                }
+            }
+            const id = (l, i, j) => l * N + i * (NZ + 1) + j;
+            for (let i = 0; i < NX; i++) {
+                for (let j = 0; j < NZ; j++) {
+                    idx.push(id(0, i, j), id(0, i, j + 1), id(0, i + 1, j), id(0, i + 1, j), id(0, i, j + 1), id(0, i + 1, j + 1));
+                    idx.push(id(1, i, j), id(1, i + 1, j), id(1, i, j + 1), id(1, i + 1, j), id(1, i + 1, j + 1), id(1, i, j + 1));
+                }
+                [0, NZ].forEach((j, k) => {
+                    const a = id(0, i, j), b = id(0, i + 1, j), c = id(1, i, j), d = id(1, i + 1, j);
+                    if (k) idx.push(a, c, b, b, c, d); else idx.push(a, b, c, b, d, c);
+                });
+            }
+            geo.setIndex(idx);
+            geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(N * 6), 3));
+            geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+            return geo;
+        }
+
+        function updateStrapGeometry() {
+            const geo = strapMesh.geometry, pos = geo.attributes.position.array;
+            let n = 0;
+            for (let layer = 0; layer < 2; layer++) {
+                for (let i = 0; i <= NX; i++) {
+                    const s = -STRAP_L / 2 + STRAP_L * i / NX, f = strapFrame(s), hw = strapHalfW(s);
+                    for (let j = 0; j <= NZ; j++) {
+                        const z = hw * (-1 + 2 * j / NZ), za = z / (STRAP_W / 2);
+                        const off = (layer ? -1 : 1) * STRAP_T / 2 + ARCH * (1 - za * za);
+                        pos[n++] = f.x + f.nx * off;
+                        pos[n++] = f.y + f.ny * off;
+                        pos[n++] = z;
+                    }
+                }
+            }
+            geo.attributes.position.needsUpdate = true;
+            geo.computeVertexNormals();
+            geo.computeBoundingSphere();
+        }
+
+        function drawStrapTexture() {
+            const g = strapCtx, W = strapCanvas.width, H = strapCanvas.height;
+            g.setLineDash([]);
+            g.fillStyle = config.strapColor;
+            g.fillRect(0, 0, W, H);
+            g.fillStyle = config.patternColor;
+            g.strokeStyle = config.patternColor;
+            const p = config.strapPattern;
+
+            if (p === 'dots') {
+                for (let r = 0, y = 14; y < H + 20; y += 34, r++) {
+                    for (let x = (r % 2 ? 20 : 0); x < W + 30; x += 40) {
+                        g.beginPath();
+                        g.arc(x, y, 9, 0, Math.PI * 2);
+                        g.fill();
+                    }
+                }
+            } else if (p === 'zigzag') {
+                g.lineWidth = 9;
+                g.lineJoin = 'miter';
+                [34, 94].forEach(y0 => {
+                    g.beginPath();
+                    for (let x = 0, i = 0; x <= W + 40; x += 20, i++) {
+                        const y = y0 + (i % 2 ? 12 : -12);
+                        if (i) g.lineTo(x, y); else g.moveTo(x, y);
+                    }
+                    g.stroke();
+                });
+            } else if (p === 'stripes') {
+                g.lineWidth = 16;
+                for (let x = -H; x < W + H; x += 44) {
+                    g.beginPath();
+                    g.moveTo(x, H);
+                    g.lineTo(x + H, 0);
+                    g.stroke();
+                }
+            }
+
+            // Stitched edge, like a fabric-covered slap band
+            g.strokeStyle = 'rgba(255,255,255,0.55)';
+            g.lineWidth = 3;
+            g.setLineDash([10, 8]);
+            [9, H - 9].forEach(y => {
+                g.beginPath();
+                g.moveTo(0, y);
+                g.lineTo(W, y);
+                g.stroke();
+            });
+            g.setLineDash([]);
+            strapTex.needsUpdate = true;
+        }
+
+        function createStarGeometry() {
+            const shape = new THREE.Shape();
+            const points = 5, outerRadius = 0.45, innerRadius = 0.22;
+            for (let i = 0; i < points * 2; i++) {
+                const r = (i % 2 === 0) ? outerRadius : innerRadius;
+                const a = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2;
+                const x = Math.cos(a) * r, y = Math.sin(a) * r;
+                if (i === 0) shape.moveTo(x, y);
+                else shape.lineTo(x, y);
+            }
+            const extrudeSettings = { depth: 0.2, bevelEnabled: true, bevelSegments: 2, bevelSize: 0.04, bevelThickness: 0.04 };
+            const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            geo.center();
+            geo.rotateX(Math.PI / 2);
+            return geo;
+        }
+
+        function createHeartGeometry() {
+            const shape = new THREE.Shape();
+            const x = 0, y = 0;
+            shape.moveTo(x + 0.25, y + 0.25);
+            shape.bezierCurveTo(x + 0.25, y + 0.25, x + 0.2, y, x, y);
+            shape.bezierCurveTo(x - 0.3, y, x - 0.3, y + 0.35, x - 0.3, y + 0.35);
+            shape.bezierCurveTo(x - 0.3, y + 0.55, x - 0.1, y + 0.77, x + 0.25, y + 0.95);
+            shape.bezierCurveTo(x + 0.6, y + 0.77, x + 0.8, y + 0.55, x + 0.8, y + 0.35);
+            shape.bezierCurveTo(x + 0.8, y + 0.35, x + 0.8, y, x + 0.5, y);
+            shape.bezierCurveTo(x + 0.35, y, x + 0.25, y + 0.25, x + 0.25, y + 0.25);
+
+            const extrudeSettings = { depth: 0.2, bevelEnabled: true, bevelSegments: 2, bevelSize: 0.03, bevelThickness: 0.03 };
+            const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            geo.center();
+            geo.rotateX(-Math.PI / 2);
+            geo.scale(0.5, 0.5, 0.5);
+            return geo;
+        }
+
+        // =================================================================
+        // DYNAMIC LED TEXTURE GENERATOR WITH ANIMATED TEXT SCROLLING
+        // =================================================================
+        function createLEDDynamicCanvas() {
+            ledCanvas = document.createElement('canvas');
+            ledCanvas.width = 256;
+            ledCanvas.height = 128;
+            ledCtx = ledCanvas.getContext('2d');
+            ledTexture = new THREE.CanvasTexture(ledCanvas);
+        }
+
+        function updateLEDTexture() {
+            if (!ledCtx) return;
+
+            // LED screen background with rounded corners
+            ledCtx.clearRect(0, 0, 256, 128);
+            ledCtx.save();
+            ledCtx.beginPath();
+            ledCtx.moveTo(24, 0);
+            ledCtx.arcTo(256, 0, 256, 128, 24);
+            ledCtx.arcTo(256, 128, 0, 128, 24);
+            ledCtx.arcTo(0, 128, 0, 0, 24);
+            ledCtx.arcTo(0, 0, 256, 0, 24);
+            ledCtx.closePath();
+            ledCtx.clip();
+            ledCtx.fillStyle = '#050b14';
+            ledCtx.fillRect(0, 0, 256, 128);
+
+            // Matrix Grid
+            ledCtx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            for (let x = 8; x < 256; x += 8) {
+                for (let y = 8; y < 128; y += 8) {
+                    ledCtx.beginPath();
+                    ledCtx.arc(x, y, 1.5, 0, Math.PI * 2);
+                    ledCtx.fill();
+                }
+            }
+
+            const text = config.ledText.toUpperCase();
+            ledCtx.font = 'bold 48px "VT323", monospace';
+            const textWidth = ledCtx.measureText(text).width;
+
+            // Handle scrolling if text exceeds width
+            let xPos = 128;
+            ledCtx.textAlign = 'center';
+
+            if (textWidth > 220) {
+                ledCtx.textAlign = 'left';
+                scrollOffset = (scrollOffset + 2) % (textWidth + 100);
+                xPos = 250 - scrollOffset;
+            }
+
+            ledCtx.textBaseline = 'middle';
+            ledCtx.shadowColor = config.ledColor;
+            ledCtx.shadowBlur = 10;
+            ledCtx.fillStyle = config.ledColor;
+            ledCtx.fillText(text, xPos, 64);
+            ledCtx.shadowBlur = 0;
+            ledCtx.fillText(text, xPos, 64);
+
+            ledCtx.restore();
+            if (ledTexture) ledTexture.needsUpdate = true;
+
+            const previewEl = document.getElementById('screen-overlay-preview');
+            if (previewEl) {
+                previewEl.innerText = text || '...';
+                previewEl.style.color = config.ledColor;
+            }
+
+            const summaryMsg = document.getElementById('summary-led-msg');
+            if (summaryMsg) summaryMsg.innerText = text || 'BLANK';
+        }
+
+        // =================================================================
+        // BLE BEACON SIMULATION EVENTS & TRIGGER
+        // =================================================================
+        function triggerBLEBeacon(zone) {
+            const signalEl = document.getElementById('ble-beacon-signal');
+            const labelEl = document.getElementById('ble-beacon-label');
+
+            signalEl.classList.remove('hidden');
+
+            if (zone === 'playground') {
+                labelEl.innerText = 'BLE Beacon: Playground Zone Detected';
+                setPresetText('PLAYGROUND ARRIVED');
+                config.ledColor = '#34d399';
+                playChimeSound('playground');
+            } else if (zone === 'bus') {
+                labelEl.innerText = 'BLE Beacon: Bus Stop Proximity';
+                setPresetText('BUS APPROACHING');
+                config.ledColor = '#fbbf24';
+                playChimeSound('bus');
+            } else if (zone === 'home') {
+                labelEl.innerText = 'BLE Beacon: Home Safe Beacon';
+                setPresetText('WELCOME HOME');
+                config.ledColor = '#38bdf8';
+                playChimeSound('home');
+            } else if (zone === 'danger') {
+                labelEl.innerText = 'BLE Beacon: Geofence Out of Bounds';
+                setPresetText('WARNING OUT OF BOUNDS');
+                config.ledColor = '#f87171';
+                playChimeSound('danger');
+            }
+
+            updateLEDTexture();
+
+            // Hide beacon indicator after 4.5 seconds
+            setTimeout(() => {
+                signalEl.classList.add('hidden');
+            }, 4500);
+        }
+
+        // =================================================================
+        // UI CONTROL BINDINGS
+        // =================================================================
+        function initUIControls() {
+            // Strap Colors
+            const strapContainer = document.getElementById('strap-color-options');
+            strapContainer.innerHTML = STRAP_COLORS.map(c => `
+                <button onclick="setStrapColor('${c.hex}', '${c.name}')" 
+                    class="w-full aspect-square rounded-xl border-2 transition-all transform hover:scale-105 ${config.strapColor === c.hex ? 'border-white shadow-lg scale-105' : 'border-transparent'}"
+                    style="background-color: ${c.hex}" title="${c.name}">
+                </button>
+            `).join('');
+
+            // Module Colors
+            const moduleContainer = document.getElementById('module-color-options');
+            moduleContainer.innerHTML = MODULE_COLORS.map(c => `
+                <button onclick="setModuleColor('${c.hex}', '${c.name}')" 
+                    class="w-full h-8 rounded-xl border-2 transition-all transform hover:scale-105 ${config.moduleColor === c.hex ? 'border-teal-400 shadow-lg scale-105' : 'border-slate-800'}"
+                    style="background-color: ${c.hex}" title="${c.name}">
+                </button>
+            `).join('');
+
+            // LED Colors
+            const ledContainer = document.getElementById('led-color-options');
+            ledContainer.innerHTML = LED_COLORS.map(c => `
+                <button onclick="setLEDColor('${c.hex}', '${c.name}')" 
+                    class="w-7 h-7 rounded-full border-2 transition-all ${config.ledColor === c.hex ? 'border-white scale-110' : 'border-transparent'}"
+                    style="background-color: ${c.hex}; box-shadow: 0 0 8px ${c.hex}88" title="${c.name}">
+                </button>
+            `).join('');
+
+            // Strap Patterns
+            document.getElementById('pattern-options').innerHTML = PATTERNS.map(p => `
+                <button onclick="setStrapPattern('${p.id}')"
+                    class="px-1 py-2 rounded-xl border text-xs font-semibold transition ${config.strapPattern === p.id ? 'border-teal-400 bg-teal-500/10 text-teal-300' : 'border-slate-800 bg-slate-900 text-slate-300 hover:bg-slate-800'}">${p.name}</button>
+            `).join('');
+            document.getElementById('pattern-color-options').innerHTML = PATTERN_COLORS.map(c => `
+                <button onclick="setPatternColor('${c}')"
+                    class="w-7 h-7 rounded-full border-2 transition-all ${config.patternColor === c ? 'border-white scale-110' : 'border-slate-600'}"
+                    style="background-color: ${c}" title="${c}"></button>
+            `).join('');
+            document.getElementById('pattern-color-row').style.opacity = config.strapPattern === 'solid' ? '0.4' : '1';
+            // LED Text Input
+            const textInput = document.getElementById('led-text-input');
+            textInput.addEventListener('input', (e) => {
+                config.ledText = e.target.value.substring(0, 24);
+                scrollOffset = 0;
+                updateLEDTexture();
+            });
+
+            renderCharmSlotsUI();
+        }
+
+        function renderCharmSlotsUI() {
+            const container = document.getElementById('charm-slots-container');
+            container.innerHTML = config.charms.map((charm, idx) => `
+                <div class="bg-slate-950/80 p-2.5 rounded-lg border border-slate-800 flex flex-col gap-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-slate-400">Hole #${idx + 1}</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" ${charm.active ? 'checked' : ''} onchange="toggleCharmActive(${idx}, this.checked)" class="sr-only peer">
+                            <div class="w-7 h-4 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-teal-500"></div>
+                        </label>
+                    </div>
+                    
+                    <div class="flex items-center gap-1.5 ${charm.active ? '' : 'opacity-40 pointer-events-none'}">
+                        <select onchange="setCharmType(${idx}, this.value)" class="bg-slate-900 text-xs text-slate-200 border border-slate-700 rounded px-1.5 py-1 flex-1 focus:outline-none">
+                            <option value="star" ${charm.type === 'star' ? 'selected' : ''}>Star</option>
+                            <option value="heart" ${charm.type === 'heart' ? 'selected' : ''}>Heart</option>
+                            <option value="gem" ${charm.type === 'gem' ? 'selected' : ''}>Gem</option>
+                            <option value="bubble" ${charm.type === 'bubble' ? 'selected' : ''}>Sphere</option>
+                        </select>
+                        <input type="color" value="${charm.color}" onchange="setCharmColor(${idx}, this.value)" class="w-6 h-6 rounded bg-transparent cursor-pointer border-0">
+                    </div>
+                </div>
+            `).join('');
+
+            updateSummaryCard();
+        }
+
+        function setStrapColor(hex, name) {
+            config.strapColor = hex;
+            config.strapColorName = name;
+            drawStrapTexture();
+            initUIControls();
+            updateSummaryCard();
+        }
+
+        function setStrapPattern(id) {
+            config.strapPattern = id;
+            drawStrapTexture();
+            initUIControls();
+            updateSummaryCard();
+        }
+
+        function setPatternColor(hex) {
+            config.patternColor = hex;
+            drawStrapTexture();
+            initUIControls();
+        }
+
+        function setCurl(value) {
+            targetBend = value / 100;
+        }
+
+        function setModuleColor(hex, name) {
+            config.moduleColor = hex;
+            config.moduleColorName = name;
+            moduleMesh.material.color.set(hex);
+            initUIControls();
+            updateSummaryCard();
+        }
+
+        function setLEDColor(hex, name) {
+            config.ledColor = hex;
+            config.ledColorName = name;
+            updateLEDTexture();
+            initUIControls();
+        }
+
+        function setPresetText(msg) {
+            document.getElementById('led-text-input').value = msg;
+            config.ledText = msg;
+            scrollOffset = 0;
+            updateLEDTexture();
+        }
+
+        function clearLEDText() {
+            setPresetText('');
+        }
+
+        function toggleCharmActive(index, active) {
+            config.charms[index].active = active;
+            buildCharms(strapMesh.parent);
+            renderCharmSlotsUI();
+        }
+
+        function setCharmType(index, type) {
+            config.charms[index].type = type;
+            buildCharms(strapMesh.parent);
+        }
+
+        function setCharmColor(index, color) {
+            config.charms[index].color = color;
+            buildCharms(strapMesh.parent);
+        }
+
+        function setStateMode(mode) {
+            config.stateMode = mode;
+            const badgeText = document.getElementById('status-badge-text');
+            const badge = document.getElementById('status-badge');
+
+            ['idle', 'arrived', 'fall', 'sos'].forEach(m => {
+                const btn = document.getElementById(`btn-state-${m}`);
+                if (btn) btn.className = "p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 text-xs font-semibold flex items-center gap-2 hover:bg-slate-800 transition";
+            });
+
+            const activeBtn = document.getElementById(`btn-state-${mode}`);
+
+            if (mode === 'idle') {
+                badgeText.innerText = "STATUS: NORMAL / IDLE";
+                badge.className = "glass-panel px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs font-medium text-emerald-400 border border-emerald-500/30";
+                if (activeBtn) activeBtn.className = "p-2.5 rounded-xl border border-teal-500/40 bg-teal-500/10 text-teal-300 text-xs font-semibold flex items-center gap-2";
+                setPresetText('SAFE');
+                config.ledColor = '#34d399';
+            } else if (mode === 'arrived') {
+                badgeText.innerText = "STATUS: ARRIVED SAFE AT SCHOOL";
+                badge.className = "glass-panel px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs font-medium text-emerald-300 border border-emerald-400/50";
+                if (activeBtn) activeBtn.className = "p-2.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 text-xs font-semibold flex items-center gap-2";
+                setPresetText('ARRIVED');
+                config.ledColor = '#34d399';
+                playChimeSound('home');
+            } else if (mode === 'fall') {
+                badgeText.innerText = "STATUS: FALL DETECTED - CHECKING";
+                badge.className = "glass-panel px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs font-medium text-amber-400 border border-amber-500/30";
+                if (activeBtn) activeBtn.className = "p-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-300 text-xs font-semibold flex items-center gap-2";
+                setPresetText('CHECKING...');
+                config.ledColor = '#fbbf24';
+                playChimeSound('danger');
+            } else if (mode === 'sos') {
+                badgeText.innerText = "STATUS: EMERGENCY SOS ACTIVE!";
+                badge.className = "glass-panel px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs font-bold text-red-400 border border-red-500/50 animate-bounce";
+                if (activeBtn) activeBtn.className = "p-2.5 rounded-xl border border-red-500/40 bg-red-500/10 text-red-300 text-xs font-semibold flex items-center gap-2";
+                setPresetText('SOS ALERT!');
+                config.ledColor = '#f87171';
+                playChimeSound('sos');
+            }
+            updateLEDTexture();
+        }
+
+        function triggerSOSAlert() {
+            setStateMode('sos');
+        }
+
+        function setCameraView(type) {
+            if (type === 'top') {
+                camera.position.set(0, 22, 0.01);
+            } else if (type === 'front') {
+                camera.position.set(0, 2, 20);
+            } else {
+                camera.position.set(0, 18, 22);
+            }
+            controls.target.set(0, 0, 0);
+        }
+
+        function resetCamera() {
+            setCameraView('perspective');
+        }
+
+        function updateSummaryCard() {
+            const activeCharmsCount = config.charms.filter(c => c.active).length;
+            const patName = PATTERNS.find(p => p.id === config.strapPattern).name;
+            document.getElementById('summary-strap-color').innerText = `${config.strapColorName}${config.strapPattern === 'solid' ? '' : ' · ' + patName} (TPU)`;
+            document.getElementById('summary-module-color').innerText = config.moduleColorName;
+            document.getElementById('summary-charms-count').innerText = `${activeCharmsCount} / 4 Slots`;
+        }
+
+        // =================================================================
+        // ANIMATION LOOP
+        // =================================================================
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const elapsedTime = clock.getElapsedTime();
+
+            // Continuously update scrolling text if needed
+
+            // Animate slap curl (flat <-> wrapped)
+            const bendDiff = targetBend - bend;
+            if (bendDiff !== 0 && strapMesh) {
+                bend = Math.abs(bendDiff) < 0.002 ? targetBend : bend + bendDiff * 0.12;
+                updateStrapGeometry();
+                layoutCharms();
+            }
+            updateLEDTexture();
+
+            // SOS Flashing
+            if (config.stateMode === 'sos') {
+                const flash = Math.sin(elapsedTime * 10) > 0;
+                sosButtonMesh.material.emissiveIntensity = flash ? 1.0 : 0.2;
+                ledScreenMesh.material.opacity = flash ? 1.0 : 0.3;
+            } else {
+                sosButtonMesh.material.emissiveIntensity = 0.2;
+                ledScreenMesh.material.opacity = 1.0;
+            }
+
+            if (controls) controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('three-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // =================================================================
+        // EXPORT MODAL HANDLERS
+        // =================================================================
+        function openExportModal() {
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.add('hidden');
+        }
+
+        function downloadConfigFile() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "kid_slap_strap_config.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function downloadSTLMock() {
+            alert("Generating print-ready STL mesh bundle for " + config.strapColorName + " TPU Slap Strap & " + config.moduleColorName + " Module...");
+        }
+    </script>
+</body>
+</html>
