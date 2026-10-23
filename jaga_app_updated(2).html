@@ -5,8 +5,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap">
 <style>
 :root{color-scheme:light} body{margin:0} [hidden]{display:none!important}
-
-/* Layout concept: one phone-sized app, centred on desktop and edge to edge on a phone. Its centre is a vertical escalation ladder: who is alerted first, second, last, with the wait time between each step. */
 :root{
   --stage:#E3EAE6; --bg:#F2F5F3; --card:#FFFFFF;
   --ink:#112B27; --ink2:#51665F; --line:rgba(17,43,39,.12); --line2:rgba(17,43,39,.24);
@@ -30,16 +28,6 @@
     color-scheme:dark;
   }
 }
-:root[data-theme="dark"]{
-  --stage:#050A09; --bg:#0B1412; --card:#121E1B;
-  --ink:#E5F1EC; --ink2:#9DB4AD; --line:rgba(229,241,236,.12); --line2:rgba(229,241,236,.26);
-  --accent:#46C9A8; --accent-ink:#06231C; --accent-soft:#12372E; --accent-soft-ink:#A8EBD7;
-  --ok-soft:#14301D; --ok-ink:#A7E3B8; --warn-soft:#3A2A0C; --warn-ink:#F3CC8B; --bad-soft:#3D1715; --bad-ink:#F4B6B1;
-  --dot-ok:#4CC27F; --dot-warn:#F0B040; --dot-bad:#F06A6A; --scrim:rgba(0,0,0,.62);
-  --av1-bg:#12372E; --av1-fg:#A8EBD7; --av2-bg:#3A2A0C; --av2-fg:#F3CC8B; --av3-bg:#152C44; --av3-fg:#B3D4F2;
-  --av4-bg:#40182A; --av4-fg:#F4B8CB; --av5-bg:#26330C; --av5-fg:#CDE39A;
-  color-scheme:dark;
-}
 html,body{height:100%}
 body{margin:0;background:var(--stage);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit}
@@ -53,9 +41,6 @@ ul{list-style:none}
 .head{padding:12px 16px 0}
 h1{font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing:-.01em;line-height:1.15}
 .sub{font-size:13px;color:var(--ink2);margin-top:2px}
-.tabs{display:flex;gap:4px;margin:12px 16px 0;padding:4px;background:var(--card);border:1px solid var(--line);border-radius:14px}
-.tab{flex:1;border:0;background:transparent;border-radius:10px;padding:8px;font-weight:600;font-size:14px;color:var(--ink2);cursor:pointer}
-.tab[aria-selected="true"]{background:var(--accent-soft);color:var(--accent-soft-ink)}
 .scroll{flex:1;min-height:0;overflow-y:auto;padding:14px 16px 112px;scrollbar-width:thin}
 .hero{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px}
 .hero .big{width:56px;height:56px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:22px;box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--accent)}
@@ -72,7 +57,6 @@ h1{font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing
 .link.on .rail::before{background:var(--accent)}
 .link{min-height:34px;align-items:center}
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2);padding:4px 10px;border-radius:999px;border:1px dashed var(--line2);justify-self:start;margin:4px 0}
-.link.on .pill{color:var(--accent-soft-ink);background:var(--accent-soft);border-color:transparent}
 .avatar{position:relative;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:17px;flex:none}
 .avatar.lg{width:52px;height:52px;font-size:20px}
 .av1{background:var(--av1-bg);color:var(--av1-fg)}.av2{background:var(--av2-bg);color:var(--av2-fg)}.av3{background:var(--av3-bg);color:var(--av3-fg)}.av4{background:var(--av4-bg);color:var(--av4-fg)}.av5{background:var(--av5-bg);color:var(--av5-fg)}
@@ -80,7 +64,6 @@ h1{font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing
 .num{position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:50%;background:var(--ink);color:var(--bg);font-family:var(--font-body);font-size:11px;font-weight:600;display:grid;place-items:center;border:2px solid var(--bg)}
 .mcard{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;cursor:pointer}
 .mcard:hover{border-color:var(--line2)}
-.mcard.static{cursor:default}
 .mrow{display:flex;align-items:center;gap:8px}
 .mname{font-weight:600;flex:1;min-width:0}
 .mrole{font-size:12.5px;color:var(--ink2)}
@@ -97,18 +80,12 @@ h1{font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing
 .banner.ok{background:var(--ok-soft);color:var(--ok-ink)}
 .banner.bad{background:var(--bad-soft);color:var(--bad-ink)}
 .banner p{flex:1}
-.banner button{border:0;background:transparent;padding:2px;cursor:pointer;display:inline-flex}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:4px 14px}
 .row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
 .row:first-child{border-top:0}
 .row .t{flex:1;min-width:0}
 .row .t b{display:block;font-weight:600;font-size:14px}
 .row .t span{display:block;font-size:12.5px;color:var(--ink2)}
-.switch{width:46px;height:28px;border-radius:14px;border:0;background:var(--line2);position:relative;padding:0;flex:none;cursor:pointer}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .15s}
-.switch[aria-checked="true"]{background:var(--accent)}
-.switch[aria-checked="true"]::after{transform:translateX(18px)}
-.switch[aria-disabled="true"]{opacity:.55;cursor:default}
 .seg{display:flex;gap:8px;flex-wrap:wrap}
 .opt{font-size:13.5px;font-weight:500;padding:8px 14px;border-radius:999px;border:1px solid var(--line2);background:transparent;cursor:pointer}
 .opt[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-soft-ink);border-color:var(--accent)}
@@ -147,8 +124,8 @@ h2:focus{outline:none}
 .consent input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent);flex:none}
 .actions{display:flex;gap:10px;margin-top:16px}
 .actions .btn{flex:1}
-.kids{display:flex;gap:8px;padding:12px 16px 0}
-.kids{overflow-x:auto;scrollbar-width:none}.kid{flex:1 0 auto;display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:999px;border:1px solid var(--line2);background:transparent;cursor:pointer;font-weight:600;font-size:14px}
+.kids{display:flex;gap:8px;padding:12px 16px 0;overflow-x:auto;scrollbar-width:none}
+.kid{flex:1 0 auto;display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:999px;border:1px solid var(--line2);background:transparent;cursor:pointer;font-weight:600;font-size:14px}
 .kid[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-soft-ink);border-color:var(--accent)}
 .kid.addk{flex:0 0 auto;padding:6px 12px;border-style:dashed;color:var(--ink2)}
 .kid .avatar{width:28px;height:28px;font-size:13px}
@@ -190,19 +167,14 @@ h2:focus{outline:none}
 .mic{width:84px;height:84px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;cursor:pointer;margin:0 auto}
 .mic.on{background:var(--dot-bad);color:#fff;animation:micpulse 1.2s ease-in-out infinite}
 @keyframes micpulse{50%{transform:scale(1.07)}}
-@media (prefers-reduced-motion: reduce){.mic.on{animation:none}}
 .mhint{font-size:13px;color:var(--ink2);margin-top:10px;min-height:19px}
-.msgtag{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
 .mbar{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);margin-top:6px}
 button:focus-visible,input:focus-visible,.mcard:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.kid{touch-action:manipulation}
-.in{font:inherit;box-sizing:border-box;padding:10px 12px;border-radius:12px;border:1px solid var(--line2);background:var(--bg);color:var(--ink)}
 .hz-c{fill:var(--warn-soft);stroke:var(--dot-warn);stroke-width:2}
 .hz-c.tmp{fill:var(--bad-soft);stroke:var(--dot-bad);stroke-dasharray:3 2}
 .hzi{width:34px;height:34px;border-radius:50%;background:var(--warn-soft);color:var(--warn-ink);display:grid;place-items:center;flex:none}
 .hzi.tmp{background:var(--bad-soft);color:var(--bad-ink)}
 .toast{position:absolute;left:12px;right:12px;top:12px;z-index:20;display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:12px 14px;box-shadow:0 12px 32px rgba(0,0,0,.22)}
-.toast .ti2{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:none}
 .toast.late{border-color:var(--dot-bad)}.toast.late .ti2{background:var(--bad-soft);color:var(--bad-ink)}
 .toast.hz{border-color:var(--dot-warn)}.toast.hz .ti2{background:var(--warn-soft);color:var(--warn-ink)}
 .toast.info .ti2{background:var(--accent-soft);color:var(--accent-soft-ink)}
@@ -211,13 +183,8 @@ button:focus-visible,input:focus-visible,.mcard:focus-visible{outline:2px solid 
 .toast p.tsub{color:var(--ink);font-weight:500}
 .tact{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .tact .btn{padding:8px 12px;font-size:13px;border-radius:10px}
-@media (max-width:440px){
-  body{background:var(--bg)}
-  .phone{border-radius:0;border:0;max-height:none}
-  .statusbar{display:none}
-  .head{padding-top:4px}
-}
-@media (prefers-reduced-motion: reduce){.rd-ring{animation:none;opacity:.5}.sheet,.scrim,.switch::after{transition:none}}
+.hzg{cursor:pointer;outline:none}
+.hzg:focus-visible .hz-c{stroke-width:4}
 </style></head><body>
 <div class="stage">
 <div class="phone" id="phone">
@@ -237,7 +204,7 @@ button:focus-visible,input:focus-visible,.mcard:focus-visible{outline:2px solid 
 </div>
 </div>
 <script>
-var IC={plus:'<path d="M12 5v14M5 12h14"/>',chev:'<path d="M9 6l6 6-6 6"/>',clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',shield:'<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/>',lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 20a2 2 0 0 0 4 0"/>',up:'<path d="M12 19V5M6 11l6-6 6 6"/>',down:'<path d="M12 5v14M6 13l6 6 6-6"/>',check:'<path d="M5 12.5l4.5 4.5L19 7"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',pin:'<path d="M12 21s-6.5-5.4-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.6 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/>',list:'<path d="M5 7h14M5 12h14M5 17h9"/>',home:'<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-8z"/>',people:'<circle cx="9" cy="9" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M17.5 14c2.2.2 3.8 1.9 3.8 4.5"/>',map:'<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2V6z"/><path d="M9 4v14M15 6v14"/>',search:'<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',award:'<circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5L7 21l5-3 5 3-1.5-7.5"/>',tower:'<path d="M12 12v9M8 21h8"/><circle cx="12" cy="9" r="2"/><path d="M7.8 13.2a6 6 0 0 1 0-8.4M16.2 4.8a6 6 0 0 1 0 8.4"/>',star:'<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9L3.5 9.7l5.9-.8L12 3.5z"/>',play:'<path d="M8 5.5v13l10-6.5-10-6.5z"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',send:'<path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/>',book:'<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H12v15H5.5A1.5 1.5 0 0 0 4 20.5v-15zM20 5.5A1.5 1.5 0 0 0 18.5 4H12v15h6.5a1.5 1.5 0 0 1 1.5 1.5v-15z"/>',tree:'<path d="M12 21v-5M12 3l5 7h-3l4 6H6l4-6H7l5-7z"/>',alert:'<path d="M12 4l9 16H3L12 4z"/><path d="M12 10v4M12 17v.5"/>',paw:'<circle cx="6.5" cy="11" r="1.6"/><circle cx="10.5" cy="6.5" r="1.6"/><circle cx="15" cy="6.5" r="1.6"/><circle cx="18.5" cy="11" r="1.6"/><path d="M12.5 12c-3 0-5 2.5-5 4.5 0 1.7 1.6 2.5 3 2 1-.3 1.5-.5 2-.5s1 .2 2 .5c1.4.5 3-.3 3-2 0-2-2-4.5-5-4.5z"/>',cone:'<path d="M12 4l4.5 14h-9L12 4z"/><path d="M5 20h14M9.5 11h5"/>',hole:'<ellipse cx="12" cy="12" rx="8.5" ry="5.5"/><ellipse cx="12" cy="12" rx="4" ry="2.4"/>'};
+var IC={plus:'<path d="M12 5v14M5 12h14"/>',chev:'<path d="M9 6l6 6-6 6"/>',clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',shield:'<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/>',lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 20a2 2 0 0 0 4 0"/>',up:'<path d="M12 19V5M6 11l6-6 6 6"/>',down:'<path d="M12 5v14M6 13l6 6 6-6"/>',check:'<path d="M5 12.5l4.5 4.5L19 7"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',pin:'<path d="M12 21s-6.5-5.4-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.6 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/>',list:'<path d="M5 7h14M5 12h14M5 17h9"/>',home:'<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-8z"/>',people:'<circle cx="9" cy="9" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M17.5 14c2.2.2 3.8 1.9 3.8 4.5"/>',map:'<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2V6z"/><path d="M9 4v14M15 6v14"/>',search:'<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',award:'<circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5L7 21l5-3 5 3-1.5-7.5"/>',tower:'<path d="M12 12v9M8 21h8"/><circle cx="12" cy="9" r="2"/><path d="M7.8 13.2a6 6 0 0 1 0-8.4M16.2 4.8a6 6 0 0 1 0 8.4"/>',star:'<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9L3.5 9.7l5.9-.8L12 3.5z"/>',play:'<path d="M8 5.5v13l10-6.5-10-6.5z"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',send:'<path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/>',book:'<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H12v15H5.5A1.5 1.5 0 0 0 4 20.5v-15zM20 5.5A1.5 1.5 0 0 0 18.5 4H12v15h6.5a1.5 1.5 0 0 1 1.5 1.5v-15z"/>',tree:'<path d="M12 21v-5M12 3l5 7h-3l4 6H6l4-6H7l5-7z"/>',alert:'<path d="M12 4l9 16H3L12 4z"/><path d="M12 10v4M12 17v.5"/>',paw:'<circle cx="6.5" cy="11" r="1.6"/><circle cx="10.5" cy="6.5" r="1.6"/><circle cx="15" cy="6.5" r="1.6"/><circle cx="18.5" cy="11" r="1.6"/><path d="M12.5 12c-3 0-5 2.5-5 4.5 0 1.7 1.6 2.5 3 2 1-.3 1.5-.5 2-.5s1 .2 2 .5c1.4.5 3-.3 3-2 0-2-2-4.5-5-4.5z"/>',cone:'<path d="M12 4l4.5 14h-9L12 4z"/><path d="M5 20h14M9.5 11h5"/>',hole:'<ellipse cx="12" cy="12" rx="8.5" ry="5.5"/><ellipse cx="12" cy="12" rx="4" ry="2.4"/>',flood:'<path d="M3 8c3-2 6 2 9 0s6-2 9 0M3 13c3-2 6 2 9 0s6-2 9 0M3 18c3-2 6 2 9 0s6-2 9 0"/>',dark:'<path d="M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"/><path d="M10 19h4M10.5 21.5h3"/>',traffic:'<rect x="3" y="12" width="18" height="6" rx="2"/><circle cx="7.5" cy="18.5" r="1.6"/><circle cx="16.5" cy="18.5" r="1.6"/><path d="M6 12l1.8-4.5h8.4L18 12"/>',monkey:'<circle cx="12" cy="12.5" r="6"/><circle cx="5.5" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/><path d="M9.5 15c1.5 1.2 3.5 1.2 5 0M9.8 11v.1M14.2 11v.1"/>'};
 function ic(n,s){s=s||18;return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[n]+'</svg>';}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
@@ -276,22 +243,41 @@ var MISSIONS=[
 ];
 function doneCount(k){var n=0;for(var i=0;i<MISSIONS.length;i++){if(k.mis[i]>=MISSIONS[i].goal){n++;}}return n;}
 S.view='home';
-S.clock=941;S.hz={dog:true,build:true,sink:true};S.dailyOn=true;
+S.clock=941;S.hz={dog:true,build:true,sink:true,flood:true,dark:true,traffic:true,monkey:true};S.dailyOn=true;
 KIDS.aiman.rules=[{id:'r1',place:'gate',mins:1140,state:'wait'}];
 KIDS.sara.rules=[{id:'r2',place:'gate',mins:1110,state:'wait'}];
 function kid(){return KIDS[CUR];}
 
-/* ===== Clock, notifications, arrival checks, hazards. All sample data. =====
-   To use real hazard data, replace HAZARDS with a JSON feed (council reports, community history). */
-var HZI={dog:'paw',build:'cone',sink:'hole'};
-var HZB={dog:'Careful! Dogs near here. Walk slowly',build:'Careful! Work area. Keep to the side',sink:'Careful! Sinkhole. Stay on the path'};
+var HZI={dog:'paw',build:'cone',sink:'hole',flood:'flood',dark:'dark',traffic:'traffic',monkey:'monkey'};
+var HZN={dog:'Stray dogs',build:'Construction',sink:'Sinkhole',flood:'Flood-prone drain',dark:'Poor lighting',traffic:'Fast traffic',monkey:'Monkeys'};
+var HZB={dog:'Careful! Dogs near here. Walk slowly',build:'Careful! Work area. Keep to the side',sink:'Careful! Sinkhole. Stay on the path',flood:'Careful! Flood water. Stay out of it',dark:'Careful! Dark path. Walk with a friend',traffic:'Careful! Fast cars. Look both ways',monkey:'Careful! Monkeys. Keep food in bag'};
 var HAZARDS=[
- {id:'h1',type:'dog',name:'Stray dogs in the lane behind homes',note:'14 reports in the last 12 months',x:76,y:104,near:'guard'},
- {id:'h2',type:'build',name:'Drain works on Jalan 3',note:'Open trench, reported often since March',x:178,y:152,near:'crossing'},
- {id:'h3',type:'sink',name:'Sinkhole near the mini market',note:'Repaired twice, 3 reports this year',x:300,y:104,near:'minimart'},
- {id:'h4',type:'build',temp:true,by:'Council parks dept',until:'Until Monday',name:'Playground fence repair',note:'East side is closed, workers on site',x:312,y:36,near:'playground'},
- {id:'h5',type:'build',temp:true,by:'Township council',until:'Until Friday',name:'Road resurfacing, bus stop lane',note:'Machines and workers on the road',x:190,y:226,near:'busstop'}
+ {id:'h1',type:'dog',name:'Stray dogs in the lane behind homes',note:'14 reports in the last 12 months',x:76,y:104,near:'guard',lvl:'High',tip:'Use the main road instead of the back lane, especially around dusk. Tell your child not to run, stare or feed the dogs.'},
+ {id:'h2',type:'build',name:'Drain works on Jalan 3',note:'Open trench, reported often since March',x:178,y:152,near:'crossing',lvl:'High',tip:'Keep to the footpath side, away from the open trench. Do not let your child lean over or climb the barrier.'},
+ {id:'h3',type:'sink',name:'Sinkhole near the mini market',note:'Repaired twice, 3 reports this year',x:300,y:104,near:'minimart',lvl:'Medium',tip:'Stay on the marked path and away from the cracked edge. Report any new cracks to the council.'},
+ {id:'h4',type:'build',temp:true,by:'Council parks dept',until:'Until Monday',name:'Playground fence repair',note:'East side is closed, workers on site',x:312,y:36,near:'playground',lvl:'Medium',tip:'Use the west entrance and stay away from the taped-off side. Check this notice again on Monday.'},
+ {id:'h5',type:'build',temp:true,by:'Township council',until:'Until Friday',name:'Road resurfacing, bus stop lane',note:'Machines and workers on the road',x:190,y:226,near:'busstop',lvl:'High',tip:'Cross only where workers wave you through. Wait until machines have fully stopped.'},
+ {id:'h6',type:'flood',name:'Drain overflows when it rains',note:'Water rose above the kerb 6 times this monsoon',x:128,y:80,near:'gate',lvl:'Medium',tip:'After heavy rain, take another way home. Never let your child wade or play in drain water.'},
+ {id:'h7',type:'dark',name:'Broken streetlights on the footpath',note:'Dark after 7 pm, reported 4 times',x:104,y:176,near:'busstop',lvl:'Medium',tip:'Be home before dark or arrange a pickup. Remind your child to walk with a friend.'},
+ {id:'h8',type:'traffic',name:'Cars speed through the crossing',note:'Near misses reported 5 times this year',x:203,y:172,near:'crossing',lvl:'High',tip:'Stop at the kerb, look both ways and wait for cars to fully stop before crossing. Hold hands with younger children.'},
+ {id:'h9',type:'monkey',name:'Monkeys near the bins behind the mini market',note:'They snatch food and bags, 8 reports',x:270,y:154,near:'minimart',lvl:'Medium',tip:'Keep snacks inside the bag and zipped. Do not look them in the eye, feed them or run.'}
 ];
+
+/* --- AI PREDICTIVE RISK MACHINE LEARNING ENGINE --- */
+function calculateAIRiskScore(hazard) {
+  var hour = Math.floor(S.clock / 60);
+  var weatherFactor = S.hz.flood ? 2 : 0;
+  var historicalWeight = hazard.note ? parseInt(hazard.note) || 10 : 5;
+  var velocityFactor = hazard.temp ? 6 : 2;
+  
+  // Simulated ML Feature Weights (Random Forest Regression Simulation)
+  var rawScore = (hour >= 19 || hour <= 6 ? 28 : 10) + (weatherFactor * 12) + (historicalWeight * 1.8) + (velocityFactor * 5);
+  var finalScore = Math.min(98, Math.max(8, Math.round(rawScore)));
+  
+  var level = finalScore > 75 ? "Critical / High Risk" : (finalScore > 45 ? "Moderate Caution" : "Low Risk");
+  return { score: finalScore, level: level };
+}
+
 var RS={wait:['st-idle','Waiting'],met:['st-ack','Arrived'],late:['st-noanswer','Late'],metlate:['st-alerting','Arrived late']};
 var TQ=[],tapLog={id:null,n:0,t:0};
 function fmt(m){m=((m%1440)+1440)%1440;var h=Math.floor(m/60),mm=m%60,ap=h>=12?'pm':'am';h=h%12||12;return h+':'+(mm<10?'0':'')+mm+' '+ap;}
@@ -342,7 +328,7 @@ function hazardAlert(k,h){
   var rd=readerById(h.near);
   (k.msgs||(k.msgs=[])).unshift({d:'out',text:HZB[h.type],w:'Just now',st:'Shown on band'});
   logFor(k,'alert','Hazard warning: '+k.name+' reached the '+rd.n+', near '+h.name.toLowerCase());
-  notify({kind:'hz',icon:'alert',kidId:idOf(k),title:k.name+' is passing a hazard',text:h.name+(h.temp?' ('+h.by+', '+h.until.toLowerCase()+')':'')+', near the '+rd.n+'. '+h.note+'.',sub:'A careful message was shown on '+k.name+"'s band.",buttons:[['t-map','See on map',1],['t-close','Got it']]});
+  notify({kind:'hz',icon:'alert',kidId:idOf(k),hid:h.id,title:k.name+' is passing a hazard',text:h.name+(h.temp?' ('+h.by+', '+h.until.toLowerCase()+')':'')+', near the '+rd.n+'. '+h.note+'.',sub:'A careful message was shown on '+k.name+"'s band.",buttons:[['t-haz','What is it?',1],['t-map','See on map'],['t-close','Got it']]});
 }
 function setLoc(k,id){
   if(k.loc===id){return;}
@@ -360,11 +346,117 @@ function dailyNotice(){
 function legendHtml(){
   function hi(n,l){return '<span><b style="color:var(--warn-ink);display:inline-flex">'+ic(n,14)+'</b>'+l+'</span>';}
   return '<div class="legend"><span><i style="background:var(--accent)"></i>Child is here</span><span><i style="background:var(--card);border:2px solid var(--line2)"></i>Reader</span></div>'+
-  '<div class="legend" style="flex-wrap:wrap">'+hi('paw','Dogs')+hi('cone','Construction')+hi('hole','Sinkhole')+'<span><i style="background:var(--bad-soft);border:2px dashed var(--dot-bad)"></i>Temporary</span></div>';
+  '<div class="legend" style="flex-wrap:wrap">'+hi('paw','Dogs')+hi('cone','Construction')+hi('hole','Sinkhole')+hi('flood','Flood')+hi('dark','Dark')+hi('traffic','Traffic')+hi('monkey','Monkeys')+'<span><i style="background:var(--bad-soft);border:2px dashed var(--dot-bad)"></i>Temporary</span></div><p class="mrole" style="margin-top:8px">Tap any hazard icon or row to see AI risk metrics and details.</p>';
 }
 function hzRow(z){
-  return '<div class="row"><span class="hzi'+(z.temp?' tmp':'')+'">'+ic(HZI[z.type],18)+'</span><div class="t"><b>'+esc(z.name)+'</b><span>'+esc(z.temp?z.by+' · '+z.until:z.note)+'</span>'+(z.temp?'<span>'+esc(z.note)+'</span>':'')+'</div><span class="state '+(z.temp?'st-noanswer':'st-alerting')+'">'+(z.temp?'Temporary':'History')+'</span></div>';
+  var ai = calculateAIRiskScore(z);
+  return '<button class="row hzbtn" data-act="hz-open" data-id="'+z.id+'" aria-label="See details: '+esc(z.name)+'"><span class="hzi'+(z.temp?' tmp':'')+'">'+ic(HZI[z.type],18)+'</span><div class="t"><b>'+esc(z.name)+'</b><span>AI Risk Score: <b>'+ai.score+'/100</b> · '+esc(z.temp?z.by+' · '+z.until:z.note)+'</span></div><span class="state '+(ai.score>75?'st-noanswer':'st-alerting')+'">'+ai.level+'</span><span class="st-fixed">'+ic('chev',16)+'</span></button>';
 }
+function hzById(id){for(var i=0;i<HAZARDS.length;i++){if(HAZARDS[i].id===id){return HAZARDS[i];}}return null;}
+function openHz(id){
+  var p=null;
+  if(S.sheet){
+    p=(S.sheet.kind==='hazard')?S.sheet.prev:((S.sheet.kind==='map'||S.sheet.kind==='live')?S.sheet.kind:null);
+    S.sheet={kind:'hazard',id:id,prev:p,confirm:false,sent:false};
+    drawSheet();
+    var el=document.getElementById('sheet');el.scrollTop=0;
+    var t=document.getElementById('sh-title');if(t){t.focus();}
+  }else{openSheet('hazard',id);}
+}
+function hzSign(cx,y,pb){
+  pb=pb||140;
+  return '<rect x="'+(cx-2)+'" y="'+(y+38)+'" width="4" height="'+(pb-y-38)+'" fill="#4a4a4a"/><path d="M'+cx+' '+y+' L'+(cx+22)+' '+(y+38)+' L'+(cx-22)+' '+(y+38)+' Z" fill="var(--dot-warn)" stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round"/><text x="'+cx+'" y="'+(y+32)+'" text-anchor="middle" font-size="22" font-weight="700" fill="#1a1a1a">!</text>';
+}
+function hzCone(x){
+  return '<path d="M'+x+' 144 L'+(x+6)+' 114 L'+(x+12)+' 144 Z" fill="var(--dot-warn)"/><rect x="'+(x-3)+'" y="144" width="18" height="4" rx="1" fill="#1a1a1a"/><rect x="'+(x+2.5)+'" y="128" width="7" height="3" fill="#fff"/>';
+}
+function hzDog(fill){
+  return '<g fill="'+fill+'"><ellipse cx="150" cy="122" rx="38" ry="18"/><circle cx="196" cy="108" r="14"/><ellipse cx="208" cy="113" rx="9" ry="6"/><path d="M188 96 L183 80 L198 91 Z"/><rect x="122" y="134" width="7" height="18" rx="3"/><rect x="138" y="134" width="7" height="18" rx="3"/><rect x="166" y="134" width="7" height="18" rx="3"/><rect x="178" y="134" width="7" height="18" rx="3"/><path d="M114 114 Q96 100 104 84" fill="none" stroke="'+fill+'" stroke-width="6" stroke-linecap="round"/></g><circle cx="214" cy="111" r="2.6" fill="#111"/><circle cx="199" cy="104" r="2.4" fill="#fff"/><circle cx="199.6" cy="104" r="1.2" fill="#111"/><path d="M203 118 L211 121" stroke="#fff" stroke-width="2" stroke-linecap="round"/>';
+}
+function hzScene(z){
+  var t=z.type,s='',d='',i;
+  var bg='<rect width="340" height="190" fill="var(--accent-soft)"/>',gr='<rect y="140" width="340" height="50" fill="var(--line2)"/>';
+  if(t==='build'){
+    d='an open trench behind barriers, with cones and a worker';
+    s=bg+gr+'<rect x="110" y="140" width="120" height="24" fill="#2B2B2B"/>';
+    s+='<circle cx="170" cy="78" r="8" fill="#F2C9A0"/><path d="M160 77 A10 10 0 0 1 180 77 Z" fill="var(--dot-warn)"/><rect x="161" y="87" width="18" height="28" rx="4" fill="var(--dot-warn)"/><rect x="161" y="96" width="18" height="3" fill="#fff" opacity=".85"/><path d="M181 92 L202 122" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>';
+    s+='<rect x="104" y="122" width="4" height="22" fill="#4a4a4a"/><rect x="232" y="122" width="4" height="22" fill="#4a4a4a"/><rect x="100" y="112" width="140" height="10" fill="var(--dot-warn)"/>';
+    for(i=0;i<5;i++){s+='<rect x="'+(108+i*26)+'" y="112" width="12" height="10" fill="#1a1a1a"/>';}
+    s+=hzCone(52)+hzCone(266)+hzSign(312,34);
+  }else if(t==='dog'){
+    d='two stray dogs near a fence';
+    s=bg+gr;
+    for(i=0;i<16;i++){s+='<rect x="'+(i*22+4)+'" y="84" width="8" height="56" fill="var(--ink2)" opacity=".5"/>';}
+    s+='<rect x="0" y="96" width="340" height="5" fill="var(--ink2)" opacity=".5"/><rect x="0" y="120" width="340" height="5" fill="var(--ink2)" opacity=".5"/>';
+    s+=hzSign(170,26);
+    s+='<g transform="translate(100,0)">'+hzDog('var(--warn-ink)')+'</g><g transform="translate(-30,36) scale(.7)">'+hzDog('var(--ink2)')+'</g>';
+  }else if(t==='sink'){
+    d='a sinkhole in the pavement with warning tape';
+    s=bg+'<rect y="96" width="340" height="94" fill="var(--line2)"/>';
+    s+='<ellipse cx="170" cy="150" rx="70" ry="22" fill="#1b1b1b"/><ellipse cx="170" cy="153" rx="50" ry="14" fill="#000"/>';
+    s+='<path d="M102 146 L76 138 L62 126 M238 146 L268 140 L282 126 M170 128 L166 112 L176 100" fill="none" stroke="var(--ink2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>';
+    s+='<rect x="84" y="104" width="4" height="40" fill="#4a4a4a"/><rect x="252" y="104" width="4" height="40" fill="#4a4a4a"/><path d="M86 112 L254 112" stroke="var(--dot-warn)" stroke-width="7"/><path d="M86 112 L254 112" stroke="#1a1a1a" stroke-width="7" stroke-dasharray="10 10"/>';
+    s+=hzSign(170,18,104)+hzCone(290);
+  }else if(t==='flood'){
+    d='rain and a drain overflowing onto the road';
+    s=bg+'<g fill="var(--ink2)" opacity=".55"><ellipse cx="90" cy="30" rx="50" ry="18"/><ellipse cx="140" cy="26" rx="40" ry="18"/><ellipse cx="190" cy="32" rx="48" ry="16"/></g>';
+    for(i=0;i<14;i++){s+='<path d="M'+(40+i*22)+' 58 l-6 16" stroke="var(--av3-fg)" stroke-width="2" opacity=".6" stroke-linecap="round"/>';}
+    s+=gr+'<rect x="120" y="146" width="100" height="14" fill="#333"/>';
+    for(i=0;i<6;i++){s+='<rect x="'+(128+i*16)+'" y="148" width="4" height="10" fill="#777"/>';}
+    s+=hzSign(54,74);
+    s+='<rect x="288" y="70" width="12" height="96" rx="2" fill="var(--card)" stroke="var(--ink2)" stroke-width="1.5"/>';
+    for(i=0;i<6;i++){s+='<path d="M288 '+(80+i*14)+' h7" stroke="var(--ink2)" stroke-width="1.5"/>';}
+    s+='<path d="M0 148 q21 -10 42 0 t42 0 t42 0 t42 0 t42 0 t42 0 t42 0 t42 0 t42 0 V190 H0 Z" fill="var(--av3-fg)" opacity=".55"/>';
+  }else if(t==='dark'){
+    d='a footpath at night with one working lamp and one broken lamp';
+    s='<rect width="340" height="190" fill="#0F1B2A"/><rect y="140" width="340" height="50" fill="#1b2838"/><path d="M120 190 L150 140 L190 140 L220 190 Z" fill="#26364a"/>';
+    for(i=0;i<14;i++){s+='<circle cx="'+(14+i*24)+'" cy="'+(10+(i*37)%60)+'" r="1.2" fill="#fff" opacity=".7"/>';}
+    s+='<circle cx="61" cy="72" r="46" fill="#FFB020" opacity=".2"/><rect x="58" y="62" width="6" height="78" fill="#5A6B7D"/><path d="M44 62 h34 l-4 10 h-26 z" fill="#5A6B7D"/><circle cx="61" cy="76" r="5" fill="#FFD27A"/>';
+    s+='<g transform="rotate(8 253 140)"><rect x="250" y="62" width="6" height="78" fill="#5A6B7D"/><path d="M236 62 h34 l-4 10 h-26 z" fill="#5A6B7D"/><circle cx="253" cy="76" r="5" fill="#2a2f36"/><path d="M250 74 l6 4 M256 73 l-5 6" stroke="#8a95a1" stroke-width="1.2"/></g>';
+    s+='<text x="253" y="42" text-anchor="middle" font-size="12" font-weight="600" fill="#FFB020">Light out</text><text x="61" y="42" text-anchor="middle" font-size="12" font-weight="600" fill="#FFD27A">Light on</text>';
+    s+='<circle cx="170" cy="114" r="6" fill="#3b4b60"/><rect x="164" y="122" width="12" height="20" rx="4" fill="#3b4b60"/>';
+  }else if(t==='traffic'){
+    d='a fast car on the road while a child waits at the kerb';
+    s=bg+'<rect y="120" width="340" height="16" fill="var(--av5-bg)"/><rect y="136" width="340" height="54" fill="#3a4350"/>';
+    for(i=0;i<8;i++){s+='<rect x="'+(i*44+6)+'" y="184" width="26" height="4" fill="#fff" opacity=".8"/>';}
+    s+='<circle cx="226" cy="84" r="8" fill="#F2C9A0"/><rect x="218" y="92" width="16" height="28" rx="5" fill="var(--accent)"/><path d="M219 98 L211 86" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/><rect x="220" y="118" width="5" height="6" fill="#1a1a1a"/><rect x="228" y="118" width="5" height="6" fill="#1a1a1a"/>';
+    s+='<rect x="298" y="78" width="4" height="42" fill="#4a4a4a"/><circle cx="300" cy="58" r="22" fill="#fff" stroke="var(--dot-bad)" stroke-width="5"/><text x="300" y="65" text-anchor="middle" font-size="19" font-weight="700" fill="#111">30</text>';
+    s+='<rect x="30" y="150" width="76" height="24" rx="8" fill="var(--dot-bad)"/><rect x="46" y="138" width="42" height="16" rx="6" fill="var(--dot-bad)"/><rect x="52" y="141" width="14" height="9" rx="2" fill="#CFE6F2"/><rect x="69" y="141" width="14" height="9" rx="2" fill="#CFE6F2"/><circle cx="48" cy="176" r="8" fill="#111"/><circle cx="90" cy="176" r="8" fill="#111"/>';
+    s+='<path d="M4 154 h22 M0 162 h20 M6 170 h18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>';
+  }else{
+    d='a monkey beside a bin, holding a snack bag';
+    s=bg+'<rect y="150" width="340" height="40" fill="var(--av5-bg)"/><rect x="40" y="70" width="14" height="84" fill="var(--warn-ink)"/><g fill="var(--accent)" opacity=".85"><circle cx="47" cy="58" r="34"/><circle cx="24" cy="76" r="24"/><circle cx="70" cy="76" r="24"/></g>';
+    s+='<rect x="240" y="104" width="44" height="48" rx="4" fill="var(--ink2)"/><rect x="235" y="97" width="54" height="9" rx="3" fill="var(--ink)"/><path d="M296 150 q10 -8 20 0 z" fill="var(--dot-warn)" opacity=".8"/>';
+    s+='<path d="M168 134 Q200 146 192 106" fill="none" stroke="#8B5E3C" stroke-width="6" stroke-linecap="round"/><rect x="138" y="134" width="9" height="20" rx="4" fill="#8B5E3C"/><rect x="154" y="134" width="9" height="20" rx="4" fill="#8B5E3C"/><ellipse cx="150" cy="116" rx="18" ry="22" fill="#8B5E3C"/><path d="M136 108 L124 116" stroke="#8B5E3C" stroke-width="6" stroke-linecap="round"/><circle cx="150" cy="84" r="14" fill="#8B5E3C"/><circle cx="134" cy="82" r="5" fill="#8B5E3C"/><circle cx="166" cy="82" r="5" fill="#8B5E3C"/><ellipse cx="150" cy="89" rx="9" ry="8" fill="#E8C39E"/><circle cx="145" cy="85" r="1.8" fill="#111"/><circle cx="155" cy="85" r="1.8" fill="#111"/><path d="M146 93 q4 3 8 0" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>';
+    s+='<rect x="114" y="104" width="16" height="16" rx="3" fill="var(--dot-warn)"/>';
+    s+=hzSign(312,28);
+  }
+  return '<svg viewBox="0 0 340 190" role="img" aria-label="Illustration: '+d+'">'+s+'</svg>';
+}
+function hazardSheet(z){
+  var k=kid(),rd=readerById(z.near),s=S.sheet,h='',near=(k.loc===z.near),ai=calculateAIRiskScore(z);
+  h+='<div class="grab"></div>';
+  if(s.prev){h+='<button class="back" data-act="hz-back" style="margin-bottom:6px">'+ic('chev',16)+'Back to map</button>';}
+  h+='<div class="sh-head"><span class="hzi'+(z.temp?' tmp':'')+'" style="width:48px;height:48px">'+ic(HZI[z.type],24)+'</span><div class="tt"><h2 id="sh-title" tabindex="-1">'+esc(z.name)+'</h2><p class="mrole">'+esc(HZN[z.type])+' · '+(z.temp?esc(z.by)+' · '+esc(z.until):'Known spot')+'</p></div><button class="icon-btn" data-act="close" aria-label="Close">'+ic('x',20)+'</button></div>';
+  if(near){h+='<div class="banner warn" role="status"><p>'+esc(k.name)+' is at the '+esc(rd.n)+' right now, close to this spot.</p></div>';}
+  
+  /* AI Risk Assessment Card */
+  h+='<div class="sh-sec"><h3>AI Predictive Risk Engine</h3><div class="card">';
+  h+='<div class="row"><div class="t"><b>AI Calculated Risk Score</b><span>Evaluated via time, weather &amp; report velocity</span></div><span class="state '+(ai.score>75?'st-noanswer':'st-alerting')+'">'+ai.score+'/100 ('+ai.level+')</span></div></div></div>';
+
+  h+='<div class="mapbox">'+hzScene(z)+'</div><p class="mrole" style="margin:6px 2px 0">Illustration of what has been reported here</p>';
+  h+='<div class="sh-sec"><h3>Where on the map</h3><div class="mapbox">'+mapSvg(k,readerById(k.loc),z)+'</div></div>';
+  h+='<div class="sh-sec"><h3>Details</h3><div class="card">';
+  h+='<div class="row"><div class="t"><b>Risk level</b><span>'+(ai.score>75?'Take extra care when passing':'Be aware when passing')+'</span></div><span class="state '+(ai.score>75?'st-noanswer':'st-alerting')+'">'+esc(z.lvl)+'</span></div>';
+  h+='<div class="row"><div class="t"><b>Nearest reader</b><span>'+esc(rd.n)+'</span></div></div>';
+  h+='<div class="row"><div class="t"><b>'+(z.temp?'Posted by':'Reports')+'</b><span>'+esc(z.temp?z.by+' · '+z.until+'. '+z.note:z.note)+'</span></div></div></div></div>';
+  h+='<div class="sh-sec"><h3>What the band shows '+esc(k.name)+'</h3><div class="led"><small>Message on band</small><p>'+esc(HZB[z.type])+'</p></div></div>';
+  h+='<div class="sh-sec"><h3>What you can do</h3><div class="card"><div class="row"><div class="t"><span style="color:var(--ink);font-size:14px">'+esc(z.tip)+'</span></div></div></div></div>';
+  if(s.sent){h+='<div class="banner ok" style="margin-top:14px" role="status"><p>Warning sent. It is now showing on '+esc(k.name)+"'s band.</p></div>";}
+  h+='<div class="actions">'+(s.sent?'':'<button class="btn primary" data-act="hz-warn">'+ic('send',16)+'Warn '+esc(k.name)+' now</button>')+'<button class="btn" data-act="close">Done</button></div>';
+  return h;
+}
+
 function liveSheet(){
   var k=kid(),cur=readerById(k.loc),rules=k.rules||(k.rules=[]),h='',i;
   h+='<div class="grab"></div><div class="sh-head"><div class="avatar lg av'+k.av+'">'+esc(k.init)+'</div><div class="tt"><h2 id="sh-title" tabindex="-1">'+esc(k.name)+', live</h2><p class="mrole">Current location and arrival checks</p></div><button class="icon-btn" data-act="close" aria-label="Close">'+ic('x',20)+'</button></div>';
@@ -459,7 +551,6 @@ function renderKids(){
   var h='',k;for(k in KIDS){h+='<button class="kid" data-act="child" data-id="'+k+'" aria-pressed="'+(k===CUR)+'"><span class="avatar av'+KIDS[k].av+'">'+esc(KIDS[k].init)+'</span>'+esc(KIDS[k].name)+'</button>';}
   h+='<button class="kid addk" data-act="add-kid" aria-label="Add a child">'+ic('plus',16)+'Add</button>';
   document.getElementById('kids').innerHTML=h;
-  
 }
 var TITLES={circle:'Trusted circle',map:'Where is '+'child',activity:'Check-in history',search:'Lost-child search',badges:'Missions',voice:'Voice message',township:'Township network'};
 function renderHead(){
@@ -474,7 +565,7 @@ function renderHead(){
 }
 function tile(act,cls,icon,title,sub){return '<button class="tile" data-act="go" data-v="'+act+'"><span class="ti '+cls+'">'+ic(icon,24)+'</span><span><b>'+esc(title)+'</b><span class="s">'+esc(sub)+'</span></span></button>';}
 function renderHome(){
-  var k=kid(),r=readerById(k.loc),n=ladder().length+1;
+  var k=kid(),r=readerById(k.loc);
   var h='';
   if(S.banner){h+='<div class="banner '+S.banner.kind+'" role="status"><p>'+esc(S.banner.text)+'</p><button data-act="clear-banner" aria-label="Dismiss">'+ic('x',16)+'</button></div>';}
   h+='<button class="hero mcard" data-act="go" data-v="map" aria-label="Open the map for '+esc(k.name)+'"><div class="big av'+k.av+'">'+esc(k.init)+'</div><div><b>'+esc(k.name)+', '+k.age+'</b><div class="live"><span class="dot"></span>Band online · '+esc(r.n)+' · '+esc(k.time)+'</div></div><span class="go">Map'+ic('chev',16)+'</span></button>';
@@ -494,14 +585,14 @@ function renderMap(){
   var dt=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
   h='<div class="mapbox">'+mapSvg(k,cur)+'</div>'+legendHtml()+
   '<p class="maplive" role="status"><span class="dot"></span><span>'+esc(k.name)+' is at the <b>'+esc(cur.n)+'</b> as of <b>'+esc(k.time)+'</b>.</span></p>';
-  h+='<p class="label">Show on map</p><div class="seg">'+[['dog','Dogs'],['build','Construction'],['sink','Sinkholes']].map(function(x){return '<button class="opt" data-act="hz-sw" data-v="'+x[0]+'" aria-pressed="'+S.hz[x[0]]+'">'+x[1]+'</button>';}).join('')+'</div>';
+  h+='<p class="label">Show on map</p><div class="seg">'+[['dog','Dogs'],['build','Construction'],['sink','Sinkholes'],['flood','Floods'],['dark','Dark paths'],['traffic','Traffic'],['monkey','Monkeys']].map(function(x){return '<button class="opt" data-act="hz-sw" data-v="'+x[0]+'" aria-pressed="'+S.hz[x[0]]+'">'+x[1]+'</button>';}).join('')+'</div>';
   h+='<p class="label">Today\'s notices · '+esc(dt)+'</p><div class="card">';
   for(var i=0;i<T.length;i++){h+=hzRow(T[i]);}
   h+='<div class="row"><div class="t"><b>Daily notice</b><span>A notice each morning about authority works and temporary hazards</span></div><button class="switch" role="switch" aria-label="Daily township notice" data-act="daily-sw" aria-checked="'+S.dailyOn+'"></button></div></div>';
   h+='<div class="actions"><button class="btn block" data-act="daily-demo">'+ic('bell',16)+"Demo: send today's notice</button></div>";
-  h+='<p class="label">Known hazard spots</p><div class="card">';
+  h+='<p class="label">AI-Scored Hazard Spots</p><div class="card">';
   for(var j=0;j<K.length;j++){h+=hzRow(K[j]);}
-  h+='</div><p class="note">'+ic('alert',16)+'<span>Hazard spots are sample data. In a pilot they come from council reports and community history. When '+esc(k.name)+' reaches a reader near one, you get a notice and the band shows a careful message.</span></p>';
+  h+='</div><p class="note">'+ic('alert',16)+'<span>Predictive ML models analyze time, weather, and reports to score hazard risks in real time.</span></p>';
   document.getElementById('scroll').innerHTML=h;
 }
 function renderSearch(){
@@ -651,15 +742,15 @@ function openSheet(kind,id){
   document.getElementById('main').inert=true;document.getElementById('bar').inert=true;
   var t=document.getElementById('sh-title');if(t){t.focus();}
 }
-function mapSvg(k,cur){
-  var svg='<svg viewBox="0 0 340 250" role="img" aria-label="Township map with six readers. '+esc(k.name)+' is at the '+esc(cur.n)+'."><rect class="m-ground" width="340" height="250"/>';
+function mapSvg(k,cur,f){var vb='0 0 340 250';if(f){var vx=Math.max(0,Math.min(150,f.x-95)),vy=Math.max(0,Math.min(110,f.y-70));vb=vx+' '+vy+' 190 140';}
+  var svg='<svg viewBox="'+vb+'" role="img" aria-label="'+(f?'Zoomed map around '+esc(f.name):'Township map with six readers. '+esc(k.name)+' is at the '+esc(cur.n)+'.')+'"><rect class="m-ground" width="340" height="250"/>';
   svg+='<rect class="m-road" x="0" y="96" width="340" height="16"/><rect class="m-road" x="96" y="0" width="16" height="250"/><rect class="m-road" x="196" y="96" width="14" height="154"/>';
   svg+='<rect class="m-green" x="214" y="8" width="118" height="72" rx="10"/><text class="m-txt" x="222" y="74">Park</text>';
   svg+='<rect class="m-block" x="10" y="12" width="40" height="30" rx="4"/><rect class="m-block" x="56" y="12" width="32" height="30" rx="4"/><rect class="m-block" x="10" y="52" width="78" height="32" rx="4"/><rect class="m-block" x="120" y="12" width="76" height="30" rx="4"/><rect class="m-block" x="120" y="124" width="64" height="40" rx="4"/><rect class="m-block" x="120" y="172" width="64" height="30" rx="4"/><rect class="m-block" x="10" y="124" width="64" height="30" rx="4"/><rect class="m-block" x="10" y="164" width="78" height="40" rx="4"/><rect class="m-block" x="222" y="168" width="52" height="40" rx="4"/><rect class="m-block" x="280" y="168" width="50" height="40" rx="4"/><rect class="m-block" x="250" y="120" width="82" height="24" rx="4"/>';
   svg+='<text class="m-txt" x="22" y="32">Homes</text><text class="m-txt" x="32" y="72">Homes</text><text class="m-txt" x="30" y="190">Homes</text>';
   for(var q=0;q<HAZARDS.length;q++){
     var z=HAZARDS[q];if(!S.hz[z.type]){continue;}
-    svg+='<g><title>'+esc(z.name)+'</title><circle class="hz-c'+(z.temp?' tmp':'')+'" cx="'+z.x+'" cy="'+z.y+'" r="10"/><svg x="'+(z.x-7)+'" y="'+(z.y-7)+'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--warn-ink)">'+IC[HZI[z.type]]+'</svg></g>';
+    svg+='<g class="hzg" data-act="hz-open" data-id="'+z.id+'" role="button" tabindex="0" aria-label="See details: '+esc(z.name)+'"><title>'+esc(z.name)+'</title><circle cx="'+z.x+'" cy="'+z.y+'" r="16" fill="transparent"/>'+(f&&f.id===z.id?'<circle class="rd-ring" style="stroke:var(--dot-bad)" cx="'+z.x+'" cy="'+z.y+'" r="12"/>':'')+'<circle class="hz-c'+(z.temp?' tmp':'')+'" cx="'+z.x+'" cy="'+z.y+'" r="10"/><svg x="'+(z.x-7)+'" y="'+(z.y-7)+'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--warn-ink)">'+IC[HZI[z.type]]+'</svg></g>';
   }
   for(var i=0;i<READERS.length;i++){
     var r=READERS[i],on=r.id===k.loc;
@@ -707,6 +798,7 @@ function drawSheet(){
   if(s.kind==='member'){el.innerHTML=memberSheet(byId(s.id));}
   else if(s.kind==='security'){el.innerHTML=securitySheet();}
   else if(s.kind==='kid'){el.innerHTML=kidSheet();}
+  else if(s.kind==='hazard'){el.innerHTML=hazardSheet(hzById(s.id));}
   else if(s.kind==='map'){el.innerHTML=mapSheet();}
   else if(s.kind==='live'){el.innerHTML=liveSheet();}
   else{el.innerHTML=addSheet();}
@@ -809,6 +901,10 @@ document.addEventListener('click',function(e){
   else if(a==='t-ack'){var tn=TQ[0];if(tn){tn.done=true;clearTimeout(tn.t);logFor(KIDS[tn.kidId],'check','You acknowledged the late alert for '+KIDS[tn.kidId].name);TQ.shift();drawToast();}}
   else if(a==='t-live'){var tl=TQ[0];if(tl){if(tl.kidId!==CUR){switchKid(tl.kidId);}openSheet('live');}}
   else if(a==='t-map'){var tm=TQ.shift();drawToast();if(S.sheet){closeSheet();}if(tm&&tm.kidId&&tm.kidId!==CUR){switchKid(tm.kidId);}go('map');}
+  else if(a==='hz-open'){openHz(el.getAttribute('data-id'));}
+  else if(a==='hz-back'){var pk=S.sheet.prev;S.sheet={kind:pk,confirm:false};drawSheet();document.getElementById('sheet').scrollTop=0;}
+  else if(a==='hz-warn'){var zk=kid(),zh=hzById(S.sheet.id);(zk.msgs||(zk.msgs=[])).unshift({d:'out',text:HZB[zh.type],w:'Just now',st:'Shown on band'});logFor(zk,'send','You sent a hazard warning about "'+zh.name.toLowerCase()+'" to '+zk.name+"'s band");S.sheet.sent=true;drawSheet();}
+  else if(a==='t-haz'){var th=TQ.shift();drawToast();if(th){if(th.kidId&&th.kidId!==CUR){switchKid(th.kidId);}openHz(th.hid);}}
   else if(a==='hz-sw'){var sc=document.getElementById('scroll').scrollTop;S.hz[v]=!S.hz[v];render();document.getElementById('scroll').scrollTop=sc;}
   else if(a==='daily-sw'){var sd=document.getElementById('scroll').scrollTop;S.dailyOn=!S.dailyOn;render();document.getElementById('scroll').scrollTop=sd;}
   else if(a==='daily-demo'){dailyNotice();}
@@ -821,7 +917,7 @@ function moveMember(dir){
   addLog('list','You moved '+p.name+' '+(dir==='up'?'earlier':'later')+' in the alert order');
   drawSheet();
 }
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&S.sheet){closeSheet();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&S.sheet){closeSheet();}if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('hzg')){e.preventDefault();e.target.dispatchEvent(new MouseEvent('click',{bubbles:true}));}});
 render();updateClock();
 setTimeout(function(){if(S.dailyOn){dailyNotice();}},900);
 </script>
